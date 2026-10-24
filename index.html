@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoundIt — Smart University Lost & Found System</title>
+  <meta name="description" content="A modern, high-precision university Lost & Found platform featuring heuristic matching and manual C++ core data structures.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              950: '#0A0F1D',
+              900: '#0F172A',
+              800: '#1E293B',
+              700: '#334155',
+              600: '#475569'
+            },
+            cobalt: {
+              50: '#EFF6FF',
+              100: '#DBEAFE',
+              200: '#BFDBFE',
+              500: '#3B82F6',
+              600: '#2563EB',
+              700: '#1D4ED8',
+              800: '#1E40AF',
+              900: '#1E3A8A'
+            },
+            teal: {
+              50: '#F0FDFA',
+              100: '#CCFBF1',
+              500: '#14B8A6',
+              600: '#0D9488',
+              700: '#0F766E'
+            },
+            cream: {
+              50: '#FAF9F6',
+              100: '#F4F1EA',
+              200: '#EAE6DC'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Cairo', '-apple-system', 'sans-serif'],
+            arabic: ['Cairo', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-[#FAF9F6] text-navy-900 min-h-screen flex flex-col font-sans selection:bg-cobalt-100 selection:text-cobalt-800">
+
+  <!-- ========================================================================= -->
+  <!-- TOP BANNER (Campus System Notice) -->
+  <!-- ========================================================================= -->
+  <aside class="bg-navy-900 text-slate-300 text-xs py-2 px-4 border-b border-navy-800">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-cobalt-600 text-white uppercase tracking-wider">Academic Demo</span>
+        <span data-i18n="footerAcademicNote">University Data Structures Capstone Project • C++17 Core + Interactive Prototype</span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px]">
+        <span class="flex items-center gap-1.5 text-teal-400">
+          <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+          <span>Security Handover Points Active (24/7)</span>
+        </span>
+        <button id="btn-top-reset-demo" class="hover:text-white transition flex items-center gap-1 underline underline-offset-2">
+          <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+          <span data-i18n="btnResetData">Restore Sample Campus Data</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================================================= -->
+  <!-- GLOBAL NAVIGATION BAR -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Brand Logo & University Seal Motif -->
+        <a href="#landing" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-cobalt-600 rounded-lg p-1">
+          <div class="w-11 h-11 rounded-xl bg-cobalt-700 flex items-center justify-center text-white shadow-md shadow-cobalt-700/20 group-hover:scale-105 transition-transform duration-200">
+            <!-- Custom Location Pin + Search / Check Logo -->
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+              <circle cx="12" cy="10" r="3.2"/>
+              <path d="m15.5 13.5 2 2"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xl font-bold tracking-tight text-navy-950 font-sans group-hover:text-cobalt-700 transition" data-i18n="brandName">FoundIt</span>
+              <span class="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">Campus</span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium hidden sm:block" data-i18n="tagline">Lost something? Let's bring it home.</p>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-1">
+          <a href="#landing" class="nav-link px-3.5 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-navy-950 hover:bg-slate-100 transition" data-nav="landing" data-i18n="navHome">Home</a>
+          <a href="#browse" class="nav-link px-3.5 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-navy-950 hover:bg-slate-100 transition" data-nav="browse" data-i18n="navBrowse">Browse Items</a>
+          <a href="#report" class="nav-link px-3.5 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-navy-950 hover:bg-slate-100 transition" data-nav="report" data-i18n="navReport">Report an Item</a>
+          <a href="#matching" class="nav-link px-3.5 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-navy-950 hover:bg-slate-100 transition" data-nav="matching" data-i18n="navMatching">Smart Matching</a>
+          <a href="#my-reports" class="nav-link px-3.5 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-navy-950 hover:bg-slate-100 transition" data-nav="my-reports" data-i18n="navMyReports">My Reports</a>
+          <a href="#admin" class="nav-link px-3.5 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-navy-950 hover:bg-slate-100 transition" data-nav="admin" data-i18n="navAdmin">Review Dashboard</a>
+          <a href="#about" class="nav-link px-3.5 py-2 rounded-lg text-sm font-semibold text-cobalt-700 hover:text-cobalt-800 hover:bg-cobalt-50 transition flex items-center gap-1.5" data-nav="about">
+            <i data-lucide="code-2" class="w-4 h-4"></i>
+            <span data-i18n="navAbout">Academic Core & C++</span>
+          </a>
+        </nav>
+
+        <!-- Right Side Controls (Role Switch, Arabic RTL Toggle, Sound, CTA) -->
+        <div class="flex items-center gap-2.5">
+          
+          <!-- Role Switcher (Student / Admin) -->
+          <div class="relative inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <button id="btn-role-student" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white shadow-xs text-navy-950 transition" title="Switch to Student view">
+              <span data-i18n="roleStudent">Student</span>
+            </button>
+            <button id="btn-role-admin" class="px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-navy-950 transition" title="Switch to Staff/Admin view">
+              <span data-i18n="roleAdmin">Staff/Admin</span>
+            </button>
+          </div>
+
+          <!-- Language Toggle (EN / AR RTL) -->
+          <button id="btn-lang-toggle" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition flex items-center gap-1.5 shadow-xs" title="Toggle Arabic RTL / English">
+            <i data-lucide="globe" class="w-3.5 h-3.5 text-cobalt-600"></i>
+            <span id="lang-label" data-i18n="langToggle">العربية</span>
+          </button>
+
+          <!-- Audio Toggle (Subtle click chime) -->
+          <button id="btn-sound-toggle" class="p-2 text-slate-500 hover:text-navy-950 hover:bg-slate-100 rounded-lg transition" title="Toggle audio feedback">
+            <i data-lucide="volume-2" id="sound-icon" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Primary Report Action Button -->
+          <a href="#report" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white shadow-sm hover:shadow transition transform active:scale-95">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span data-i18n="btnReportLost">Report Lost Item</span>
+          </a>
+
+          <!-- Mobile Menu Hamburger -->
+          <button id="btn-mobile-menu" class="lg:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg focus:outline-none" aria-label="Toggle navigation menu">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-2">
+      <a href="#landing" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navHome">Home</a>
+      <a href="#browse" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navBrowse">Browse Items</a>
+      <a href="#report" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navReport">Report an Item</a>
+      <a href="#matching" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navMatching">Smart Matching</a>
+      <a href="#my-reports" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navMyReports">My Reports</a>
+      <a href="#admin" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navAdmin">Review Dashboard</a>
+      <a href="#about" class="block px-3 py-2 rounded-lg text-base font-medium text-cobalt-700 hover:bg-cobalt-50" data-i18n="navAbout">Academic Core & C++</a>
+      <div class="pt-2 border-t border-slate-200 flex flex-col gap-2">
+        <a href="#report" class="w-full text-center px-4 py-2.5 rounded-xl bg-cobalt-600 text-white font-semibold" data-i18n="btnReportLost">Report Lost Item</a>
+        <a href="#report?type=found" class="w-full text-center px-4 py-2.5 rounded-xl bg-slate-100 text-slate-800 font-semibold" data-i18n="btnReportFound">Report Found Item</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN ROUTED VIEWS CONTAINER -->
+  <!-- ========================================================================= -->
+  <main id="app-container" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-opacity duration-150">
+    <!-- Dynamic views injected here by router -->
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- GLOBAL FOOTER -->
+  <!-- ========================================================================= -->
+  <footer class="bg-navy-950 text-slate-400 border-t border-navy-900 mt-20 pt-16 pb-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-navy-800/80">
+        
+        <!-- Brand Info -->
+        <div class="md:col-span-2 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-cobalt-600 flex items-center justify-center text-white">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+                <circle cx="12" cy="10" r="3.2"/>
+              </svg>
+            </div>
+            <span class="text-xl font-bold text-white tracking-tight" data-i18n="brandName">FoundIt</span>
+          </div>
+          <p class="text-sm text-slate-400 max-w-md leading-relaxed" data-i18n="footerDesc">
+            Smart University Lost & Found System. Built for campus student safety, fast item recovery, and academic rigor in Data Structures.
+          </p>
+          <div class="pt-2 flex flex-wrap items-center gap-3 text-xs text-slate-400">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-navy-900 border border-navy-800 text-teal-400">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+              <span>Safe Campus Handover Certified</span>
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-navy-900 border border-navy-800 text-cobalt-400">
+              <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+              <span>C++17 Data Structures Core</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Campus Handover Locations -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4" data-i18n="footerLinks">Campus Handover Desks</h4>
+          <ul class="space-y-2 text-xs">
+            <li class="flex items-start gap-2">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-cobalt-400 mt-0.5 shrink-0"></i>
+              <span>Campus Security Desk (24/7) - Admin Bldg Gate 1</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-cobalt-400 mt-0.5 shrink-0"></i>
+              <span>Student Union Help Desk - 1st Floor Lobby</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-cobalt-400 mt-0.5 shrink-0"></i>
+              <span>Main Library Circulation Desk - Ground Floor</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-cobalt-400 mt-0.5 shrink-0"></i>
+              <span>Engineering Dean Office Concierge - Hall Lobby</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Quick Links & Reset -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4">System Actions</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#about" class="hover:text-white transition flex items-center gap-1.5"><i data-lucide="file-code" class="w-3.5 h-3.5"></i> C++ Source Code & Architecture</a></li>
+            <li><a href="#matching" class="hover:text-white transition flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Heuristic Matchmaker Sandbox</a></li>
+            <li><a href="#admin" class="hover:text-white transition flex items-center gap-1.5"><i data-lucide="layers" class="w-3.5 h-3.5"></i> FIFO Review Moderation Queue</a></li>
+            <li class="pt-2">
+              <button id="btn-footer-reset-demo" class="text-slate-400 hover:text-white transition flex items-center gap-1.5 text-xs bg-navy-900 hover:bg-navy-800 px-3 py-1.5 rounded-lg border border-navy-800">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-teal-400"></i>
+                <span data-i18n="btnResetData">Restore Sample Campus Data</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Copyright & Disclosure -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <p>© 2026 FoundIt University Project. All rights reserved. Designed for University Data Structures & Algorithms.</p>
+        <p class="text-slate-400 text-center sm:text-right">
+          Interactive Prototype Layer. Core data structures modeled in <span class="text-cobalt-400 font-mono">C++17</span>.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS CONTAINER -->
+  <!-- ========================================================================= -->
+  
+  <!-- 1. ITEM DETAILS MODAL -->
+  <div id="modal-item-details" class="fixed inset-0 z-50 hidden overflow-y-auto bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 transition-all transform animate-in fade-in zoom-in-95 duration-200">
+      <div id="modal-item-content">
+        <!-- Dynamically rendered by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SAFE CLAIM & CONTACT MODAL -->
+  <div id="modal-safe-claim" class="fixed inset-0 z-50 hidden overflow-y-auto bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-navy-950" data-i18n="claimModalTitle">Secure Item Claim Verification</h3>
+            <p class="text-xs text-slate-500" data-i18n="claimModalSubtitle">To protect student property, please answer identifying verification questions.</p>
+          </div>
+        </div>
+        <button class="modal-close text-slate-400 hover:text-navy-950 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-safe-claim" class="space-y-4">
+        <input type="hidden" id="claim-target-id" name="targetId" value="">
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="claimQuestion1">
+            Describe unique markings, scratches, or stickers:
+          </label>
+          <textarea id="claim-q1" required rows="2" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-cobalt-600 focus:outline-none" placeholder="e.g. Small scratch on top corner, IEEE sticker on bottom..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="claimQuestion2">
+            Approximate time or specific desk where you recall leaving it:
+          </label>
+          <input type="text" id="claim-q2" required class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-cobalt-600 focus:outline-none" placeholder="e.g. Wednesday around 2:15 PM, 2nd row near window">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="claimQuestion3">
+            Provide lock-screen passcode hint or serial number (if applicable):
+          </label>
+          <input type="text" id="claim-q3" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-cobalt-600 focus:outline-none" placeholder="e.g. Wallpaper shows orange cat, serial ends in ...9402">
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-start gap-2">
+          <i data-lucide="lock" class="w-4 h-4 text-cobalt-600 shrink-0 mt-0.5"></i>
+          <span>Your response will be forwarded exclusively to the campus staff handover authority. Personal phone numbers and emails remain hidden.</span>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button type="button" class="modal-close px-4 py-2 rounded-xl border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50" data-i18n="btnClose">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white text-sm font-semibold shadow-xs" data-i18n="btnSubmitClaim">Submit Verification Claim</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. CONFIRMATION DIALOG (Destructive Actions) -->
+  <div id="modal-confirm" class="fixed inset-0 z-50 hidden overflow-y-auto bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center gap-3 text-rose-600">
+        <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+        </div>
+        <h3 id="confirm-title" class="text-base font-bold text-navy-950" data-i18n="confirmDeleteTitle">Delete this report?</h3>
+      </div>
+      <p id="confirm-desc" class="text-xs text-slate-600 leading-relaxed" data-i18n="confirmDeleteDesc">
+        Are you sure you want to remove this report? You can undo this action immediately via the Undo Stack.
+      </p>
+      <div class="flex items-center justify-end gap-2.5 pt-2">
+        <button id="btn-confirm-cancel" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50">Cancel</button>
+        <button id="btn-confirm-proceed" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold shadow-xs">Proceed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TOAST NOTIFICATIONS POPUP -->
+  <!-- ========================================================================= -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+  <!-- Core JavaScript Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/matching.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
