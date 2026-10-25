@@ -150,7 +150,7 @@
     state.currentRoute = path;
     state.routeParams = params;
 
-    // Update active nav styling
+    // Update active nav styling (Desktop)
     document.querySelectorAll('.nav-link').forEach(link => {
       const targetNav = link.getAttribute('data-nav');
       if (targetNav === path) {
@@ -160,10 +160,39 @@
       }
     });
 
-    // Close mobile menu if open
+    // Update active mobile drawer links
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      const targetNav = link.getAttribute('data-nav');
+      if (targetNav === path) {
+        link.classList.add('bg-cobalt-50', 'text-cobalt-700', 'font-bold');
+        link.classList.remove('text-slate-800');
+      } else {
+        link.classList.remove('bg-cobalt-50', 'text-cobalt-700', 'font-bold');
+        link.classList.add('text-slate-800');
+      }
+    });
+
+    // Update active mobile bottom app navigation items
+    document.querySelectorAll('.mobile-bottom-item').forEach(link => {
+      const targetNav = link.getAttribute('data-bottom-nav');
+      if (targetNav === path) {
+        link.classList.add('active', 'text-cobalt-600');
+        link.classList.remove('text-slate-500');
+      } else {
+        link.classList.remove('active', 'text-cobalt-600');
+        link.classList.add('text-slate-500');
+      }
+    });
+
+    // Close mobile drawer if open and reset icon
     const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuIcon = document.getElementById('mobile-menu-icon');
     if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
       mobileMenu.classList.add('hidden');
+      if (mobileMenuIcon) {
+        mobileMenuIcon.setAttribute('data-lucide', 'menu');
+        if (window.lucide) window.lucide.createIcons();
+      }
     }
 
     renderCurrentView();
@@ -189,6 +218,13 @@
     const langLabel = document.getElementById('lang-label');
     if (langLabel) {
       langLabel.textContent = window.FOUNDIT_I18N.getLang() === 'en' ? 'العربية' : 'English';
+    }
+
+    // Update mobile role badge
+    const mobileRoleBadge = document.getElementById('mobile-role-current-badge');
+    if (mobileRoleBadge) {
+      const isStudent = state.role === 'student';
+      mobileRoleBadge.textContent = isStudent ? (window.FOUNDIT_I18N.getLang() === 'ar' ? 'طالب' : 'Student') : (window.FOUNDIT_I18N.getLang() === 'ar' ? 'مشرف' : 'Staff/Admin');
     }
   }
 
@@ -251,29 +287,29 @@
     const recentReports = allReports.slice(0, 4);
 
     return `
-      <div class="space-y-20">
+      <div class="space-y-12 sm:space-y-20">
         
         <!-- HERO SECTION -->
-        <section class="relative pt-6 pb-12 lg:pt-14 lg:pb-20 text-center max-w-4xl mx-auto space-y-8">
+        <section class="relative pt-4 pb-8 sm:pt-6 sm:pb-12 lg:pt-14 lg:pb-20 text-center max-w-4xl mx-auto space-y-6 sm:space-y-8">
           <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cobalt-50 border border-cobalt-200 text-cobalt-700 text-xs font-semibold">
             <span class="w-2 h-2 rounded-full bg-cobalt-600 animate-pulse"></span>
             <span data-i18n="heroBadge">${t('heroBadge')}</span>
           </div>
 
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-navy-950 leading-[1.15]">
+          <h1 class="text-2xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-navy-950 leading-tight">
             ${isAr ? 'فقدت شيئاً في الحرم الجامعي؟<br><span class="text-cobalt-600">نعيده إلى يديك</span> بسرعة وأمان.' : 'Lost something on campus?<br><span class="text-cobalt-600">Let\'s bring it home.</span>'}
           </h1>
 
-          <p class="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed" data-i18n="heroSubtitle">
+          <p class="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed px-2" data-i18n="heroSubtitle">
             ${t('heroSubtitle')}
           </p>
 
           <!-- Search Bar -->
-          <div class="max-w-2xl mx-auto bg-white p-2 rounded-2xl shadow-lg border border-slate-200 flex flex-col sm:flex-row items-center gap-2">
+          <div class="max-w-2xl mx-auto bg-white p-2 rounded-2xl shadow-md border border-slate-200 flex flex-col sm:flex-row items-center gap-2">
             <div class="flex items-center gap-3 flex-1 px-3 w-full">
               <i data-lucide="search" class="w-5 h-5 text-slate-400 shrink-0"></i>
               <input type="text" id="landing-search-input" placeholder="${t('searchPlaceholder')}" 
-                     class="w-full py-2 text-sm text-navy-950 placeholder-slate-400 focus:outline-none bg-transparent">
+                     class="w-full py-2.5 text-sm text-navy-950 placeholder-slate-400 focus:outline-none bg-transparent">
             </div>
             <button id="landing-search-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white font-semibold text-sm transition shadow-sm hover:shadow flex items-center justify-center gap-2">
               <span data-i18n="btnSearch">${t('btnSearch')}</span>
@@ -282,66 +318,66 @@
           </div>
 
           <!-- Primary Actions -->
-          <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
-            <a href="#report?type=lost" class="px-6 py-3.5 rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white font-semibold text-sm shadow-md shadow-cobalt-600/20 hover:shadow-lg transition flex items-center gap-2">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-2 w-full max-w-sm sm:max-w-none mx-auto">
+            <a href="#report?type=lost" class="px-6 py-3.5 rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white font-semibold text-sm shadow-md shadow-cobalt-600/20 hover:shadow-lg transition flex items-center justify-center gap-2">
               <i data-lucide="help-circle" class="w-4 h-4"></i>
               <span data-i18n="btnReportLost">${t('btnReportLost')}</span>
             </a>
-            <a href="#report?type=found" class="px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-semibold text-sm shadow-xs transition flex items-center gap-2">
+            <a href="#report?type=found" class="px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-semibold text-sm shadow-xs transition flex items-center justify-center gap-2">
               <i data-lucide="check-circle-2" class="w-4 h-4 text-teal-600"></i>
               <span data-i18n="btnReportFound">${t('btnReportFound')}</span>
             </a>
-            <a href="#browse" class="px-5 py-3.5 rounded-xl text-slate-600 hover:text-navy-950 font-semibold text-sm transition flex items-center gap-1.5">
+            <a href="#browse" class="px-5 py-3.5 rounded-xl text-slate-600 hover:text-navy-950 font-semibold text-sm transition flex items-center justify-center gap-1.5">
               <span data-i18n="viewAllCategories">${t('viewAllCategories')}</span>
               <i data-lucide="chevron-right" class="w-4 h-4"></i>
             </a>
           </div>
 
           <!-- Quick Stats Banner -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8">
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs text-center">
-              <div class="text-3xl font-extrabold text-cobalt-700">142+</div>
-              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1" data-i18n="statRecovered">${t('statRecovered')}</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 pt-6 sm:pt-8">
+            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold text-cobalt-700">142+</div>
+              <div class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1" data-i18n="statRecovered">${t('statRecovered')}</div>
             </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs text-center">
-              <div class="text-3xl font-extrabold text-navy-950">${allReports.length}</div>
-              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1" data-i18n="statActive">${t('statActive')}</div>
+            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold text-navy-950">${allReports.length}</div>
+              <div class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1" data-i18n="statActive">${t('statActive')}</div>
             </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs text-center">
-              <div class="text-3xl font-extrabold text-teal-600">89.4%</div>
-              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1" data-i18n="statMatchRate">${t('statMatchRate')}</div>
+            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold text-teal-600">89.4%</div>
+              <div class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1" data-i18n="statMatchRate">${t('statMatchRate')}</div>
             </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs text-center">
-              <div class="text-3xl font-extrabold text-navy-950">&lt; 18h</div>
-              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1" data-i18n="statHandoverTime">${t('statHandoverTime')}</div>
+            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold text-navy-950">&lt; 18h</div>
+              <div class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1" data-i18n="statHandoverTime">${t('statHandoverTime')}</div>
             </div>
           </div>
         </section>
 
         <!-- CATEGORIES SHORTCUTS -->
-        <section class="space-y-6">
+        <section class="space-y-4 sm:space-y-6">
           <div class="flex items-end justify-between">
             <div>
-              <h2 class="text-2xl font-bold text-navy-950" data-i18n="categoriesTitle">${t('categoriesTitle')}</h2>
-              <p class="text-sm text-slate-500" data-i18n="categoriesSubtitle">${t('categoriesSubtitle')}</p>
+              <h2 class="text-xl sm:text-2xl font-bold text-navy-950" data-i18n="categoriesTitle">${t('categoriesTitle')}</h2>
+              <p class="text-xs sm:text-sm text-slate-500" data-i18n="categoriesSubtitle">${t('categoriesSubtitle')}</p>
             </div>
-            <a href="#browse" class="text-sm font-semibold text-cobalt-600 hover:text-cobalt-700 flex items-center gap-1">
+            <a href="#browse" class="text-xs sm:text-sm font-semibold text-cobalt-600 hover:text-cobalt-700 flex items-center gap-1 shrink-0">
               <span data-i18n="viewAllCategories">${t('viewAllCategories')}</span>
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
             ${window.FOUNDIT_DATA.ITEM_CATEGORIES.map(cat => {
               const count = allReports.filter(r => r.category === cat.id).length;
               return `
-                <a href="#browse?category=${cat.id}" class="bg-white p-4 rounded-2xl border border-slate-200 card-hover flex items-center gap-3.5 group">
-                  <div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-cobalt-600 group-hover:bg-cobalt-50 group-hover:text-cobalt-700 transition">
-                    <i data-lucide="${cat.icon}" class="w-6 h-6"></i>
+                <a href="#browse?category=${cat.id}" class="bg-white p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200 card-hover flex items-center gap-2.5 sm:gap-3.5 group">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-cobalt-600 group-hover:bg-cobalt-50 group-hover:text-cobalt-700 transition shrink-0">
+                    <i data-lucide="${cat.icon}" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                   </div>
-                  <div>
-                    <h3 class="text-sm font-bold text-navy-950 group-hover:text-cobalt-600 transition">${isAr ? cat.ar : cat.name}</h3>
-                    <p class="text-xs text-slate-400 font-medium">${count} items</p>
+                  <div class="min-w-0">
+                    <h3 class="text-xs sm:text-sm font-bold text-navy-950 group-hover:text-cobalt-600 transition truncate">${isAr ? cat.ar : cat.name}</h3>
+                    <p class="text-[11px] text-slate-400 font-medium">${count} items</p>
                   </div>
                 </a>
               `;
@@ -849,25 +885,31 @@
         </div>
 
         <!-- Wizard Step Tracker -->
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between relative">
-          <div class="flex-1 flex items-center gap-2">
-            <div id="step-badge-1" class="w-7 h-7 rounded-full bg-cobalt-600 text-white flex items-center justify-center text-xs font-bold shrink-0">1</div>
-            <span class="text-xs font-bold text-navy-950 hidden sm:inline" data-i18n="step1">Type & Category</span>
+        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-xs space-y-2">
+          <div class="flex items-center justify-between relative px-1 sm:px-2">
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <div id="step-badge-1" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-cobalt-600 text-white flex items-center justify-center text-xs font-bold shrink-0">1</div>
+              <span class="text-xs font-bold text-navy-950 hidden sm:inline" data-i18n="step1">Type & Category</span>
+            </div>
+            <div class="h-0.5 flex-1 mx-2 sm:mx-3 bg-slate-200"></div>
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <div id="step-badge-2" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">2</div>
+              <span class="text-xs font-medium text-slate-500 hidden sm:inline" data-i18n="step2">Item Details</span>
+            </div>
+            <div class="h-0.5 flex-1 mx-2 sm:mx-3 bg-slate-200"></div>
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <div id="step-badge-3" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">3</div>
+              <span class="text-xs font-medium text-slate-500 hidden sm:inline" data-i18n="step3">Location & Date</span>
+            </div>
+            <div class="h-0.5 flex-1 mx-2 sm:mx-3 bg-slate-200"></div>
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <div id="step-badge-4" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">4</div>
+              <span class="text-xs font-medium text-slate-500 hidden sm:inline" data-i18n="step4">Contact & Submit</span>
+            </div>
           </div>
-          <div class="h-0.5 w-6 sm:w-12 bg-slate-200"></div>
-          <div class="flex-1 flex items-center justify-center gap-2">
-            <div id="step-badge-2" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">2</div>
-            <span class="text-xs font-medium text-slate-500 hidden sm:inline" data-i18n="step2">Item Details</span>
-          </div>
-          <div class="h-0.5 w-6 sm:w-12 bg-slate-200"></div>
-          <div class="flex-1 flex items-center justify-center gap-2">
-            <div id="step-badge-3" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">3</div>
-            <span class="text-xs font-medium text-slate-500 hidden sm:inline" data-i18n="step3">Location & Date</span>
-          </div>
-          <div class="h-0.5 w-6 sm:w-12 bg-slate-200"></div>
-          <div class="flex-1 flex items-center justify-end gap-2">
-            <div id="step-badge-4" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">4</div>
-            <span class="text-xs font-medium text-slate-500 hidden sm:inline" data-i18n="step4">Contact & Submit</span>
+          <!-- Mobile Current Step Indicator -->
+          <div id="mobile-step-title-indicator" class="sm:hidden text-center text-xs font-bold text-cobalt-700 pt-1 border-t border-slate-100">
+            ${isAr ? 'الخطوة ١ من ٤: نوع البلاغ والتصنيف' : 'Step 1 of 4: Type & Category'}
           </div>
         </div>
 
@@ -1119,6 +1161,23 @@
       } else {
         btnNext.classList.remove('hidden');
         btnSubmit.classList.add('hidden');
+      }
+
+      const mobileStepIndicator = document.getElementById('mobile-step-title-indicator');
+      if (mobileStepIndicator) {
+        const isAr = window.FOUNDIT_I18N.getLang() === 'ar';
+        const stepTitles = isAr ? [
+          'الخطوة ١ من ٤: نوع البلاغ والتصنيف',
+          'الخطوة ٢ من ٤: مواصفات وتفاصيل الغرض',
+          'الخطوة ٣ من ٤: موقع الحرم والتاريخ والصورة',
+          'الخطوة ٤ من ٤: طريقة الاستلام والتأكيد'
+        ] : [
+          'Step 1 of 4: Type & Category',
+          'Step 2 of 4: Item Details & Keywords',
+          'Step 3 of 4: Campus Location & Date',
+          'Step 4 of 4: Handover & Submit'
+        ];
+        mobileStepIndicator.textContent = stepTitles[currentStep - 1] || '';
       }
 
       if (window.lucide) window.lucide.createIcons();
@@ -1490,8 +1549,8 @@
                 </div>
 
                 <!-- Action Controls (Status Selector & Buttons) -->
-                <div class="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0">
-                  <select class="select-change-status text-xs font-semibold py-1.5 px-2 rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-cobalt-600 text-slate-700" data-id="${report.id}">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2.5 shrink-0 w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0">
+                  <select class="select-change-status text-xs font-semibold py-2 px-3 rounded-xl sm:rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-cobalt-600 text-slate-700 w-full sm:w-auto" data-id="${report.id}">
                     <option value="open" ${report.status === 'open' ? 'selected' : ''}>Active / Open</option>
                     <option value="under_review" ${report.status === 'under_review' ? 'selected' : ''}>Under Review</option>
                     <option value="matched" ${report.status === 'matched' ? 'selected' : ''}>Match Found</option>
@@ -1499,21 +1558,23 @@
                     <option value="closed" ${report.status === 'closed' ? 'selected' : ''}>Closed</option>
                   </select>
 
-                  <button class="btn-inspect-matches px-3 py-1.5 rounded-lg bg-cobalt-50 text-cobalt-700 hover:bg-cobalt-100 font-semibold text-xs transition flex items-center gap-1.5"
-                          data-id="${report.id}">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                    <span data-i18n="btnViewMatches">${t('btnViewMatches')}</span>
-                  </button>
+                  <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button class="btn-inspect-matches flex-1 sm:flex-initial justify-center px-3 py-2 sm:py-1.5 rounded-xl sm:rounded-lg bg-cobalt-50 text-cobalt-700 hover:bg-cobalt-100 font-semibold text-xs transition flex items-center gap-1.5"
+                            data-id="${report.id}">
+                      <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                      <span data-i18n="btnViewMatches">${t('btnViewMatches')}</span>
+                    </button>
 
-                  <button class="btn-open-details px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold text-xs transition"
-                          data-id="${report.id}">
-                    <span>Details</span>
-                  </button>
+                    <button class="btn-open-details flex-1 sm:flex-initial justify-center px-3 py-2 sm:py-1.5 rounded-xl sm:rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold text-xs transition text-center"
+                            data-id="${report.id}">
+                      <span>Details</span>
+                    </button>
 
-                  <button class="btn-delete-report p-2 rounded-lg text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition"
-                          data-id="${report.id}" title="Delete Report">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                  </button>
+                    <button class="btn-delete-report p-2 sm:p-1.5 rounded-xl sm:rounded-lg text-rose-600 hover:bg-rose-50 border border-slate-200 sm:border-transparent hover:border-rose-200 transition shrink-0 flex items-center justify-center"
+                            data-id="${report.id}" title="Delete Report">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
                 </div>
 
               </div>
@@ -1645,46 +1706,46 @@
         </div>
 
         <!-- Summary KPI Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
+          <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider" data-i18n="statQueueSize">${t('statQueueSize')}</span>
+              <span class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider" data-i18n="statQueueSize">${t('statQueueSize')}</span>
               <i data-lucide="layers" class="w-4 h-4 text-amber-600"></i>
             </div>
-            <div class="text-3xl font-extrabold text-amber-600 mt-2">${reviewQueue.length}</div>
-            <div class="text-[11px] text-slate-400 mt-1">First-in, first-out sequence</div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 mt-2">${reviewQueue.length}</div>
+            <div class="text-[10px] sm:text-[11px] text-slate-400 mt-1">First-in, first-out sequence</div>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider" data-i18n="statTotalCatalog">${t('statTotalCatalog')}</span>
+              <span class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider" data-i18n="statTotalCatalog">${t('statTotalCatalog')}</span>
               <i data-lucide="database" class="w-4 h-4 text-cobalt-600"></i>
             </div>
-            <div class="text-3xl font-extrabold text-navy-950 mt-2">${allReports.length}</div>
-            <div class="text-[11px] text-slate-400 mt-1">Hash Table Bucket indexed</div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-navy-950 mt-2">${allReports.length}</div>
+            <div class="text-[10px] sm:text-[11px] text-slate-400 mt-1">Hash Table Bucket indexed</div>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider" data-i18n="statReturnedRate">${t('statReturnedRate')}</span>
+              <span class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider" data-i18n="statReturnedRate">${t('statReturnedRate')}</span>
               <i data-lucide="check-circle" class="w-4 h-4 text-teal-600"></i>
             </div>
-            <div class="text-3xl font-extrabold text-teal-600 mt-2">${returnedCount}</div>
-            <div class="text-[11px] text-slate-400 mt-1">Successfully claimed</div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-teal-600 mt-2">${returnedCount}</div>
+            <div class="text-[10px] sm:text-[11px] text-slate-400 mt-1">Successfully claimed</div>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider" data-i18n="statDupAlerts">${t('statDupAlerts')}</span>
+              <span class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider" data-i18n="statDupAlerts">${t('statDupAlerts')}</span>
               <i data-lucide="copy" class="w-4 h-4 text-rose-600"></i>
             </div>
-            <div class="text-3xl font-extrabold text-navy-950 mt-2">0 Flagged</div>
-            <div class="text-[11px] text-slate-400 mt-1">Duplicate scanner active</div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-navy-950 mt-2">0 Flagged</div>
+            <div class="text-[10px] sm:text-[11px] text-slate-400 mt-1">Duplicate scanner active</div>
           </div>
         </div>
 
         <!-- FIFO QUEUE TABLE -->
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden space-y-4 p-6">
+        <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-xs overflow-hidden space-y-4 p-4 sm:p-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
             <div>
               <h3 class="text-lg font-bold text-navy-950" data-i18n="queueTitle">${t('queueTitle')}</h3>
@@ -1855,14 +1916,14 @@
 
         <!-- Academic Tabs (Visualizer | C++ Code | Complexity) -->
         <div class="space-y-6">
-          <div class="flex items-center border-b border-slate-200">
-            <button class="academic-tab-btn py-3 px-5 text-sm font-bold border-b-2 transition ${state.activeAcademicTab === 'visualizer' ? 'border-cobalt-600 text-cobalt-700' : 'border-transparent text-slate-500 hover:text-navy-950'}" data-tab="visualizer">
+          <div class="flex items-center overflow-x-auto no-scrollbar whitespace-nowrap border-b border-slate-200">
+            <button class="academic-tab-btn shrink-0 py-3 px-4 sm:px-5 text-sm font-bold border-b-2 transition ${state.activeAcademicTab === 'visualizer' ? 'border-cobalt-600 text-cobalt-700' : 'border-transparent text-slate-500 hover:text-navy-950'}" data-tab="visualizer">
               <span data-i18n="tabVisualizer">${t('tabVisualizer')}</span>
             </button>
-            <button class="academic-tab-btn py-3 px-5 text-sm font-bold border-b-2 transition ${state.activeAcademicTab === 'code' ? 'border-cobalt-600 text-cobalt-700' : 'border-transparent text-slate-500 hover:text-navy-950'}" data-tab="code">
+            <button class="academic-tab-btn shrink-0 py-3 px-4 sm:px-5 text-sm font-bold border-b-2 transition ${state.activeAcademicTab === 'code' ? 'border-cobalt-600 text-cobalt-700' : 'border-transparent text-slate-500 hover:text-navy-950'}" data-tab="code">
               <span data-i18n="tabCode">${t('tabCode')}</span>
             </button>
-            <button class="academic-tab-btn py-3 px-5 text-sm font-bold border-b-2 transition ${state.activeAcademicTab === 'complexity' ? 'border-cobalt-600 text-cobalt-700' : 'border-transparent text-slate-500 hover:text-navy-950'}" data-tab="complexity">
+            <button class="academic-tab-btn shrink-0 py-3 px-4 sm:px-5 text-sm font-bold border-b-2 transition ${state.activeAcademicTab === 'complexity' ? 'border-cobalt-600 text-cobalt-700' : 'border-transparent text-slate-500 hover:text-navy-950'}" data-tab="complexity">
               <span data-i18n="tabComplexity">${t('tabComplexity')}</span>
             </button>
           </div>
@@ -2389,10 +2450,24 @@ class HashTable {
         </div>
 
         <!-- Score Breakdown Visual Bar -->
-        <div class="space-y-1.5 pt-2 border-t border-slate-100">
-          <div class="flex items-center justify-between text-[11px] font-semibold text-slate-600">
-            <span>Score Factors:</span>
-            <span>Category: ${match.categoryScore}/35 | Keywords: ${match.keywordScore}/30 | Building: ${match.locationScore}/20 | Date: ${match.dateScore}/15</span>
+        <div class="space-y-2 pt-2 border-t border-slate-100">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px] font-semibold text-slate-600">
+            <span class="bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 flex items-center justify-between">
+              <span class="text-slate-500">${isAr ? 'الفئة' : 'Category'}:</span>
+              <span class="text-cobalt-700 font-bold">${match.categoryScore}/35</span>
+            </span>
+            <span class="bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 flex items-center justify-between">
+              <span class="text-slate-500">${isAr ? 'الكلمات' : 'Keywords'}:</span>
+              <span class="text-indigo-700 font-bold">${match.keywordScore}/30</span>
+            </span>
+            <span class="bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 flex items-center justify-between">
+              <span class="text-slate-500">${isAr ? 'الموقع' : 'Building'}:</span>
+              <span class="text-teal-700 font-bold">${match.locationScore}/20</span>
+            </span>
+            <span class="bg-slate-50 px-2 py-1 rounded-lg border border-slate-100 flex items-center justify-between">
+              <span class="text-slate-500">${isAr ? 'التاريخ' : 'Date'}:</span>
+              <span class="text-amber-700 font-bold">${match.dateScore}/15</span>
+            </span>
           </div>
           <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden flex">
             <div class="bg-cobalt-600 h-full" style="width: ${match.categoryScore}%" title="Category Parity"></div>
@@ -2412,12 +2487,12 @@ class HashTable {
         </div>
 
         <!-- Bottom Action -->
-        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-          <button class="btn-card-details px-3.5 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold" data-id="${candidate.id}">
-            Inspect Candidate Details
+        <div class="flex flex-col sm:flex-row sm:items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button class="btn-card-details w-full sm:w-auto px-3.5 py-2 sm:py-1.5 rounded-xl sm:rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold text-center" data-id="${candidate.id}">
+            ${isAr ? 'فحص تفاصيل الغرض' : 'Inspect Candidate Details'}
           </button>
-          <button class="btn-open-claim px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold shadow-xs" data-id="${candidate.id}">
-            Initiate Claim Flow
+          <button class="btn-open-claim w-full sm:w-auto px-3.5 py-2 sm:py-1.5 rounded-xl sm:rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold shadow-xs text-center" data-id="${candidate.id}">
+            ${isAr ? 'بدء إجراءات الاستلام' : 'Initiate Claim Flow'}
           </button>
         </div>
       </div>
@@ -2445,29 +2520,29 @@ class HashTable {
     content.innerHTML = `
       <div class="relative">
         <!-- Image Header -->
-        <div class="relative h-60 bg-slate-900 overflow-hidden">
+        <div class="relative h-44 sm:h-60 bg-slate-900 overflow-hidden">
           <img src="${report.image}" alt="${report.title}" class="w-full h-full object-cover">
-          <button class="modal-close absolute top-4 right-4 rtl:right-auto rtl:left-4 w-8 h-8 rounded-full bg-navy-950/70 text-white flex items-center justify-center hover:bg-navy-950 transition">
+          <button class="modal-close absolute top-3 right-3 rtl:right-auto rtl:left-3 w-8 h-8 rounded-full bg-navy-950/70 text-white flex items-center justify-center hover:bg-navy-950 transition">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
-          <div class="absolute bottom-4 left-4 rtl:left-auto rtl:right-4 flex items-center gap-2">
-            <span class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider text-white ${report.type === 'lost' ? 'bg-rose-600' : 'bg-teal-600'}">
+          <div class="absolute bottom-3 left-3 rtl:left-auto rtl:right-3 flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider text-white ${report.type === 'lost' ? 'bg-rose-600' : 'bg-teal-600'}">
               ${report.type.toUpperCase()}
             </span>
-            <span class="px-3 py-1 rounded-lg text-xs font-semibold backdrop-blur-md bg-white/90 text-navy-950 border border-white">
+            <span class="px-2.5 py-1 rounded-lg text-xs font-semibold backdrop-blur-md bg-white/90 text-navy-950 border border-white">
               ${getStatusName(report.status)}
             </span>
           </div>
         </div>
 
         <!-- Body Details -->
-        <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+        <div class="p-4 sm:p-6 space-y-4 sm:space-y-6 max-h-[65vh] sm:max-h-[70vh] overflow-y-auto">
           <div>
             <div class="text-xs font-mono text-slate-400 mb-1">${report.id}</div>
-            <h2 class="text-xl font-bold text-navy-950">${report.title}</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-navy-950">${report.title}</h2>
           </div>
 
-          <div class="grid grid-cols-2 gap-4 text-xs">
+          <div class="grid grid-cols-2 gap-3 sm:gap-4 text-xs">
             <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
               <span class="text-slate-400 block mb-1">Campus Location</span>
               <span class="font-bold text-navy-950 flex items-center gap-1">
@@ -2489,7 +2564,7 @@ class HashTable {
 
           <div>
             <h4 class="text-xs font-bold text-navy-950 uppercase tracking-wider mb-2">Description & Identifying Characteristics</h4>
-            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-200">
               ${report.description}
             </p>
           </div>
@@ -2550,12 +2625,12 @@ class HashTable {
           ` : ''}
 
           <!-- Modal Action Bar -->
-          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
-            <button class="modal-close px-4 py-2 rounded-xl border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50">
-              Close
+          <div class="flex flex-col sm:flex-row sm:items-center justify-end gap-2.5 pt-4 border-t border-slate-200">
+            <button class="modal-close w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 order-2 sm:order-1 text-center">
+              ${isAr ? 'إغلاق' : 'Close'}
             </button>
-            <button class="btn-open-claim px-5 py-2 rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white text-xs font-semibold shadow-xs" data-id="${report.id}">
-              ${report.type === 'found' ? 'Claim This Item Safely' : 'I Found This Item (Contact Reporter)'}
+            <button class="btn-open-claim w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white text-xs font-semibold shadow-xs order-1 sm:order-2 text-center" data-id="${report.id}">
+              ${report.type === 'found' ? (isAr ? 'المطالبة بهذا الغرض بأمان' : 'Claim This Item Safely') : (isAr ? 'عثرت على هذا الغرض (تواصل)' : 'I Found This Item (Contact)')}
             </button>
           </div>
         </div>
@@ -2679,61 +2754,108 @@ class HashTable {
       });
     }
 
-    // Role switcher (Student / Admin)
+    // Role switcher (Student / Admin: Desktop & Mobile Drawer)
     const btnRoleStudent = document.getElementById('btn-role-student');
     const btnRoleAdmin = document.getElementById('btn-role-admin');
+    const mobileRoleStudent = document.getElementById('mobile-role-student');
+    const mobileRoleAdmin = document.getElementById('mobile-role-admin');
+    const mobileRoleBadge = document.getElementById('mobile-role-current-badge');
 
     const updateRoleUI = () => {
-      if (state.role === 'student') {
-        btnRoleStudent.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg bg-white shadow-xs text-navy-950 transition';
-        btnRoleAdmin.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-navy-950 transition';
-      } else {
-        btnRoleAdmin.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg bg-navy-950 text-white shadow-xs transition';
-        btnRoleStudent.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-navy-950 transition';
+      const isStudent = state.role === 'student';
+      if (btnRoleStudent && btnRoleAdmin) {
+        if (isStudent) {
+          btnRoleStudent.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg bg-white shadow-xs text-navy-950 transition';
+          btnRoleAdmin.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-navy-950 transition';
+        } else {
+          btnRoleAdmin.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg bg-navy-950 text-white shadow-xs transition';
+          btnRoleStudent.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-navy-950 transition';
+        }
+      }
+      if (mobileRoleStudent && mobileRoleAdmin) {
+        if (isStudent) {
+          mobileRoleStudent.className = 'py-2 text-xs font-bold rounded-lg bg-cobalt-600 text-white shadow-xs transition';
+          mobileRoleAdmin.className = 'py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-navy-950 transition';
+        } else {
+          mobileRoleAdmin.className = 'py-2 text-xs font-bold rounded-lg bg-navy-950 text-white shadow-xs transition';
+          mobileRoleStudent.className = 'py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-navy-950 transition';
+        }
+      }
+      if (mobileRoleBadge) {
+        mobileRoleBadge.textContent = isStudent ? (window.FOUNDIT_I18N.getLang() === 'ar' ? 'طالب' : 'Student') : (window.FOUNDIT_I18N.getLang() === 'ar' ? 'مشرف' : 'Staff/Admin');
       }
     };
 
-    if (btnRoleStudent && btnRoleAdmin) {
-      btnRoleStudent.addEventListener('click', () => {
-        sound.playClick();
-        state.role = 'student';
-        updateRoleUI();
+    const setRole = (role) => {
+      sound.playClick();
+      state.role = role;
+      updateRoleUI();
+      if (role === 'student') {
         showToast('Switched to Student Portal view', 'info');
-      });
-
-      btnRoleAdmin.addEventListener('click', () => {
-        sound.playClick();
-        state.role = 'admin';
-        updateRoleUI();
+      } else {
         showToast('Switched to Staff/Administrator view with Moderation Queue access', 'info');
         navigateTo('admin');
-      });
-    }
+      }
+    };
 
-    // Sound toggle
+    if (btnRoleStudent) btnRoleStudent.addEventListener('click', () => setRole('student'));
+    if (btnRoleAdmin) btnRoleAdmin.addEventListener('click', () => setRole('admin'));
+    if (mobileRoleStudent) mobileRoleStudent.addEventListener('click', () => setRole('student'));
+    if (mobileRoleAdmin) mobileRoleAdmin.addEventListener('click', () => setRole('admin'));
+
+    // Sound toggle (Desktop & Mobile Drawer)
     const soundBtn = document.getElementById('btn-sound-toggle');
     const soundIcon = document.getElementById('sound-icon');
-    if (soundBtn) {
-      soundBtn.addEventListener('click', () => {
-        sound.enabled = !sound.enabled;
-        if (sound.enabled) {
-          sound.playClick();
-          soundIcon.setAttribute('data-lucide', 'volume-2');
-          showToast('Audio feedback enabled', 'info');
-        } else {
-          soundIcon.setAttribute('data-lucide', 'volume-x');
-          showToast('Audio feedback muted', 'info');
-        }
-        if (window.lucide) window.lucide.createIcons();
-      });
-    }
+    const mobileSoundBtn = document.getElementById('mobile-sound-toggle');
+    const mobileSoundIcon = document.getElementById('mobile-sound-icon');
+    const mobileSoundLabel = document.getElementById('mobile-sound-label');
+
+    const toggleAudio = () => {
+      sound.enabled = !sound.enabled;
+      if (sound.enabled) {
+        sound.playClick();
+        if (soundIcon) soundIcon.setAttribute('data-lucide', 'volume-2');
+        if (mobileSoundIcon) mobileSoundIcon.setAttribute('data-lucide', 'volume-2');
+        if (mobileSoundLabel) mobileSoundLabel.textContent = 'Audio On';
+        showToast('Audio feedback enabled', 'info');
+      } else {
+        if (soundIcon) soundIcon.setAttribute('data-lucide', 'volume-x');
+        if (mobileSoundIcon) mobileSoundIcon.setAttribute('data-lucide', 'volume-x');
+        if (mobileSoundLabel) mobileSoundLabel.textContent = 'Audio Off';
+        showToast('Audio feedback muted', 'info');
+      }
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    if (soundBtn) soundBtn.addEventListener('click', toggleAudio);
+    if (mobileSoundBtn) mobileSoundBtn.addEventListener('click', toggleAudio);
 
     // Mobile menu toggle
     const mobileBtn = document.getElementById('btn-mobile-menu');
     const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuIcon = document.getElementById('mobile-menu-icon');
     if (mobileBtn && mobileMenu) {
-      mobileBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
+      mobileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.playClick();
+        const isOpen = !mobileMenu.classList.contains('hidden');
+        if (isOpen) {
+          mobileMenu.classList.add('hidden');
+          if (mobileMenuIcon) mobileMenuIcon.setAttribute('data-lucide', 'menu');
+        } else {
+          mobileMenu.classList.remove('hidden');
+          if (mobileMenuIcon) mobileMenuIcon.setAttribute('data-lucide', 'x');
+        }
+        if (window.lucide) window.lucide.createIcons();
+      });
+
+      // Close mobile drawer when clicking any link inside it
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          if (mobileMenuIcon) mobileMenuIcon.setAttribute('data-lucide', 'menu');
+          if (window.lucide) window.lucide.createIcons();
+        });
       });
     }
 
@@ -2761,6 +2883,7 @@ class HashTable {
     // Top & Footer Demo Reset
     const resetTopBtn = document.getElementById('btn-top-reset-demo');
     const resetFooterBtn = document.getElementById('btn-footer-reset-demo');
+    const resetMobileBtn = document.getElementById('mobile-reset-demo');
     const handleReset = () => {
       openConfirmDialog(
         'Restore Default Campus Data?',
@@ -2775,6 +2898,7 @@ class HashTable {
 
     if (resetTopBtn) resetTopBtn.addEventListener('click', handleReset);
     if (resetFooterBtn) resetFooterBtn.addEventListener('click', handleReset);
+    if (resetMobileBtn) resetMobileBtn.addEventListener('click', handleReset);
 
     // Global Safe Claim Form Submit
     const claimForm = document.getElementById('form-safe-claim');

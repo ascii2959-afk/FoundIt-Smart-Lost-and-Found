@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>FoundIt — Smart University Lost & Found System</title>
   <meta name="description" content="A modern, high-precision university Lost & Found platform featuring heuristic matching and manual C++ core data structures.">
   
@@ -65,20 +65,22 @@
   <!-- ========================================================================= -->
   <!-- TOP BANNER (Campus System Notice) -->
   <!-- ========================================================================= -->
-  <aside class="bg-navy-900 text-slate-300 text-xs py-2 px-4 border-b border-navy-800">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-cobalt-600 text-white uppercase tracking-wider">Academic Demo</span>
-        <span data-i18n="footerAcademicNote">University Data Structures Capstone Project • C++17 Core + Interactive Prototype</span>
+  <aside class="bg-navy-900 text-slate-300 text-xs py-1.5 sm:py-2 px-3 sm:px-4 border-b border-navy-800">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <!-- Left Notice -->
+      <div class="flex items-center gap-2 truncate">
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-semibold bg-cobalt-600 text-white uppercase tracking-wider shrink-0">Academic Demo</span>
+        <span class="truncate text-[11px] sm:text-xs text-slate-300" data-i18n="footerAcademicNote">University Data Structures Capstone Project • C++17 Core</span>
       </div>
-      <div class="flex items-center gap-4 text-[11px]">
-        <span class="flex items-center gap-1.5 text-teal-400">
+      <!-- Right Status & Reset -->
+      <div class="flex items-center gap-3 text-[11px] shrink-0">
+        <span class="hidden sm:flex items-center gap-1.5 text-teal-400">
           <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-          <span>Security Handover Points Active (24/7)</span>
+          <span>Security Handover Active (24/7)</span>
         </span>
-        <button id="btn-top-reset-demo" class="hover:text-white transition flex items-center gap-1 underline underline-offset-2">
-          <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
-          <span data-i18n="btnResetData">Restore Sample Campus Data</span>
+        <button id="btn-top-reset-demo" class="hover:text-white transition flex items-center gap-1 text-[11px] text-slate-400 underline underline-offset-2">
+          <i data-lucide="rotate-ccw" class="w-3 h-3 text-teal-400"></i>
+          <span data-i18n="btnResetData">Reset Data</span>
         </button>
       </div>
     </div>
@@ -88,23 +90,23 @@
   <!-- GLOBAL NAVIGATION BAR -->
   <!-- ========================================================================= -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all duration-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-20">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
         
         <!-- Brand Logo & University Seal Motif -->
-        <a href="#landing" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-cobalt-600 rounded-lg p-1">
-          <div class="w-11 h-11 rounded-xl bg-cobalt-700 flex items-center justify-center text-white shadow-md shadow-cobalt-700/20 group-hover:scale-105 transition-transform duration-200">
+        <a href="#landing" class="flex items-center gap-2 sm:gap-3 group focus:outline-none shrink-0">
+          <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-cobalt-700 flex items-center justify-center text-white shadow-md shadow-cobalt-700/20 group-hover:scale-105 transition-transform duration-200">
             <!-- Custom Location Pin + Search / Check Logo -->
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
               <circle cx="12" cy="10" r="3.2"/>
               <path d="m15.5 13.5 2 2"/>
             </svg>
           </div>
           <div>
-            <div class="flex items-center gap-1.5">
-              <span class="text-xl font-bold tracking-tight text-navy-950 font-sans group-hover:text-cobalt-700 transition" data-i18n="brandName">FoundIt</span>
-              <span class="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">Campus</span>
+            <div class="flex items-center gap-1 sm:gap-1.5">
+              <span class="text-lg sm:text-xl font-bold tracking-tight text-navy-950 font-sans group-hover:text-cobalt-700 transition" data-i18n="brandName">FoundIt</span>
+              <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest px-1 sm:px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">Campus</span>
             </div>
             <p class="text-[11px] text-slate-500 font-medium hidden sm:block" data-i18n="tagline">Lost something? Let's bring it home.</p>
           </div>
@@ -125,10 +127,10 @@
         </nav>
 
         <!-- Right Side Controls (Role Switch, Arabic RTL Toggle, Sound, CTA) -->
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-1.5 sm:gap-2.5">
           
-          <!-- Role Switcher (Student / Admin) -->
-          <div class="relative inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <!-- Role Switcher (Student / Admin): Desktop only -->
+          <div class="relative hidden sm:inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200">
             <button id="btn-role-student" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white shadow-xs text-navy-950 transition" title="Switch to Student view">
               <span data-i18n="roleStudent">Student</span>
             </button>
@@ -137,44 +139,107 @@
             </button>
           </div>
 
-          <!-- Language Toggle (EN / AR RTL) -->
-          <button id="btn-lang-toggle" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition flex items-center gap-1.5 shadow-xs" title="Toggle Arabic RTL / English">
+          <!-- Language Toggle (EN / AR RTL): Compact on mobile -->
+          <button id="btn-lang-toggle" class="px-2.5 py-1.5 sm:px-3 sm:py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition flex items-center gap-1 shadow-xs" title="Toggle Arabic RTL / English">
             <i data-lucide="globe" class="w-3.5 h-3.5 text-cobalt-600"></i>
             <span id="lang-label" data-i18n="langToggle">العربية</span>
           </button>
 
-          <!-- Audio Toggle (Subtle click chime) -->
-          <button id="btn-sound-toggle" class="p-2 text-slate-500 hover:text-navy-950 hover:bg-slate-100 rounded-lg transition" title="Toggle audio feedback">
+          <!-- Audio Toggle: Desktop only -->
+          <button id="btn-sound-toggle" class="hidden sm:inline-flex p-2 text-slate-500 hover:text-navy-950 hover:bg-slate-100 rounded-lg transition" title="Toggle audio feedback">
             <i data-lucide="volume-2" id="sound-icon" class="w-4 h-4"></i>
           </button>
 
-          <!-- Primary Report Action Button -->
-          <a href="#report" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white shadow-sm hover:shadow transition transform active:scale-95">
+          <!-- Primary Report Action Button: Desktop only -->
+          <a href="#report" class="hidden md:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white shadow-sm hover:shadow transition transform active:scale-95">
             <i data-lucide="plus-circle" class="w-4 h-4"></i>
-            <span data-i18n="btnReportLost">Report Lost Item</span>
+            <span data-i18n="btnReportLost">Report Lost</span>
           </a>
 
           <!-- Mobile Menu Hamburger -->
-          <button id="btn-mobile-menu" class="lg:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg focus:outline-none" aria-label="Toggle navigation menu">
-            <i data-lucide="menu" class="w-6 h-6"></i>
+          <button id="btn-mobile-menu" class="lg:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg focus:outline-none transition active:scale-95" aria-label="Toggle navigation menu">
+            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Mobile Navigation Drawer -->
-    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-2">
-      <a href="#landing" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navHome">Home</a>
-      <a href="#browse" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navBrowse">Browse Items</a>
-      <a href="#report" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navReport">Report an Item</a>
-      <a href="#matching" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navMatching">Smart Matching</a>
-      <a href="#my-reports" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navMyReports">My Reports</a>
-      <a href="#admin" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-800 hover:bg-slate-100" data-i18n="navAdmin">Review Dashboard</a>
-      <a href="#about" class="block px-3 py-2 rounded-lg text-base font-medium text-cobalt-700 hover:bg-cobalt-50" data-i18n="navAbout">Academic Core & C++</a>
-      <div class="pt-2 border-t border-slate-200 flex flex-col gap-2">
-        <a href="#report" class="w-full text-center px-4 py-2.5 rounded-xl bg-cobalt-600 text-white font-semibold" data-i18n="btnReportLost">Report Lost Item</a>
-        <a href="#report?type=found" class="w-full text-center px-4 py-2.5 rounded-xl bg-slate-100 text-slate-800 font-semibold" data-i18n="btnReportFound">Report Found Item</a>
+    <!-- Enhanced Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white/98 backdrop-blur-xl px-4 pt-3 pb-6 space-y-3.5 shadow-xl max-h-[85vh] overflow-y-auto mobile-drawer-animate">
+      
+      <!-- Role Switcher Inside Mobile Drawer -->
+      <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
+        <div class="flex items-center justify-between text-xs font-semibold text-slate-500">
+          <span class="flex items-center gap-1.5">
+            <i data-lucide="user-check" class="w-3.5 h-3.5 text-cobalt-600"></i>
+            <span data-i18n="switchRole">Role View</span>
+          </span>
+          <span id="mobile-role-current-badge" class="text-[10px] font-bold text-cobalt-700 bg-cobalt-50 px-2 py-0.5 rounded-full border border-cobalt-200">Student</span>
+        </div>
+        <div class="grid grid-cols-2 gap-1.5 p-1 bg-white rounded-xl border border-slate-200">
+          <button id="mobile-role-student" class="py-2 text-xs font-bold rounded-lg bg-cobalt-600 text-white shadow-xs transition" data-i18n="roleStudent">
+            Student
+          </button>
+          <button id="mobile-role-admin" class="py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-navy-950 transition" data-i18n="roleAdmin">
+            Staff/Admin
+          </button>
+        </div>
       </div>
+
+      <!-- Navigation Links with Icons -->
+      <nav class="space-y-1">
+        <a href="#landing" class="mobile-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-100 transition" data-nav="landing">
+          <i data-lucide="home" class="w-4 h-4 text-slate-500"></i>
+          <span data-i18n="navHome">Home</span>
+        </a>
+        <a href="#browse" class="mobile-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-100 transition" data-nav="browse">
+          <i data-lucide="compass" class="w-4 h-4 text-slate-500"></i>
+          <span data-i18n="navBrowse">Browse Items</span>
+        </a>
+        <a href="#report" class="mobile-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-100 transition" data-nav="report">
+          <i data-lucide="plus-circle" class="w-4 h-4 text-cobalt-600"></i>
+          <span data-i18n="navReport">Report an Item</span>
+        </a>
+        <a href="#matching" class="mobile-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-100 transition" data-nav="matching">
+          <i data-lucide="sparkles" class="w-4 h-4 text-indigo-500"></i>
+          <span data-i18n="navMatching">Smart Matching</span>
+        </a>
+        <a href="#my-reports" class="mobile-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-100 transition" data-nav="my-reports">
+          <i data-lucide="folder-check" class="w-4 h-4 text-teal-600"></i>
+          <span data-i18n="navMyReports">My Reports</span>
+        </a>
+        <a href="#admin" class="mobile-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-slate-100 transition" data-nav="admin">
+          <i data-lucide="shield" class="w-4 h-4 text-amber-500"></i>
+          <span data-i18n="navAdmin">Review Dashboard</span>
+        </a>
+        <a href="#about" class="mobile-nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-cobalt-700 bg-cobalt-50/60 hover:bg-cobalt-50 transition" data-nav="about">
+          <i data-lucide="code-2" class="w-4 h-4 text-cobalt-700"></i>
+          <span data-i18n="navAbout">Academic Core & C++</span>
+        </a>
+      </nav>
+
+      <!-- Dual Report Action Buttons -->
+      <div class="pt-2 border-t border-slate-200 grid grid-cols-2 gap-2">
+        <a href="#report?type=lost" class="text-center px-3 py-2.5 rounded-xl bg-cobalt-600 text-white font-bold text-xs shadow-xs" data-i18n="btnReportLost">
+          Report Lost
+        </a>
+        <a href="#report?type=found" class="text-center px-3 py-2.5 rounded-xl bg-teal-600 text-white font-bold text-xs shadow-xs" data-i18n="btnReportFound">
+          Report Found
+        </a>
+      </div>
+
+      <!-- Audio and Demo Reset inside mobile drawer -->
+      <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+        <button id="mobile-sound-toggle" class="flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">
+          <i data-lucide="volume-2" id="mobile-sound-icon" class="w-3.5 h-3.5"></i>
+          <span id="mobile-sound-label">Audio On</span>
+        </button>
+        <button id="mobile-reset-demo" class="flex items-center gap-1.5 py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-cobalt-600"></i>
+          <span data-i18n="btnResetData">Restore Sample Campus Data</span>
+        </button>
+      </div>
+
     </div>
   </header>
 
@@ -188,7 +253,7 @@
   <!-- ========================================================================= -->
   <!-- GLOBAL FOOTER -->
   <!-- ========================================================================= -->
-  <footer class="bg-navy-950 text-slate-400 border-t border-navy-900 mt-20 pt-16 pb-12">
+  <footer class="bg-navy-950 text-slate-400 border-t border-navy-900 mt-20 pt-12 sm:pt-16 pb-28 sm:pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-navy-800/80">
         
@@ -273,33 +338,33 @@
   <!-- ========================================================================= -->
   
   <!-- 1. ITEM DETAILS MODAL -->
-  <div id="modal-item-details" class="fixed inset-0 z-50 hidden overflow-y-auto bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 transition-all transform animate-in fade-in zoom-in-95 duration-200">
-      <div id="modal-item-content">
+  <div id="modal-item-details" class="fixed inset-0 z-50 hidden overflow-y-auto bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-slate-200 transition-all transform animate-in fade-in zoom-in-95 duration-200">
+      <div id="modal-item-content" class="overflow-y-auto">
         <!-- Dynamically rendered by app.js -->
       </div>
     </div>
   </div>
 
   <!-- 2. SAFE CLAIM & CONTACT MODAL -->
-  <div id="modal-safe-claim" class="fixed inset-0 z-50 hidden overflow-y-auto bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+  <div id="modal-safe-claim" class="fixed inset-0 z-50 hidden overflow-y-auto bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[92vh] overflow-y-auto border border-slate-200 p-5 sm:p-6 space-y-4 sm:space-y-5 animate-in fade-in zoom-in-95 duration-200">
       <div class="flex items-start justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
             <i data-lucide="shield-check" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-lg font-bold text-navy-950" data-i18n="claimModalTitle">Secure Item Claim Verification</h3>
+            <h3 class="text-base sm:text-lg font-bold text-navy-950" data-i18n="claimModalTitle">Secure Item Claim Verification</h3>
             <p class="text-xs text-slate-500" data-i18n="claimModalSubtitle">To protect student property, please answer identifying verification questions.</p>
           </div>
         </div>
-        <button class="modal-close text-slate-400 hover:text-navy-950 p-1 rounded-lg">
+        <button class="modal-close text-slate-400 hover:text-navy-950 p-1.5 rounded-lg">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <form id="form-safe-claim" class="space-y-4">
+      <form id="form-safe-claim" class="space-y-3.5 sm:space-y-4">
         <input type="hidden" id="claim-target-id" name="targetId" value="">
 
         <div>
@@ -328,7 +393,7 @@
           <span>Your response will be forwarded exclusively to the campus staff handover authority. Personal phone numbers and emails remain hidden.</span>
         </div>
 
-        <div class="flex items-center justify-end gap-3 pt-2">
+        <div class="flex items-center justify-end gap-2.5 pt-2">
           <button type="button" class="modal-close px-4 py-2 rounded-xl border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50" data-i18n="btnClose">Cancel</button>
           <button type="submit" class="px-5 py-2 rounded-xl bg-cobalt-600 hover:bg-cobalt-700 text-white text-sm font-semibold shadow-xs" data-i18n="btnSubmitClaim">Submit Verification Claim</button>
         </div>
@@ -337,10 +402,10 @@
   </div>
 
   <!-- 3. CONFIRMATION DIALOG (Destructive Actions) -->
-  <div id="modal-confirm" class="fixed inset-0 z-50 hidden overflow-y-auto bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
+  <div id="modal-confirm" class="fixed inset-0 z-50 hidden overflow-y-auto bg-navy-950/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[92vh] overflow-y-auto border border-slate-200 p-5 sm:p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
       <div class="flex items-center gap-3 text-rose-600">
-        <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center">
+        <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
           <i data-lucide="alert-triangle" class="w-5 h-5"></i>
         </div>
         <h3 id="confirm-title" class="text-base font-bold text-navy-950" data-i18n="confirmDeleteTitle">Delete this report?</h3>
@@ -356,9 +421,50 @@
   </div>
 
   <!-- ========================================================================= -->
+  <!-- MOBILE BOTTOM APP NAVIGATION BAR (Native App Feel) -->
+  <!-- ========================================================================= -->
+  <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200/90 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] px-2 py-1.5 bottom-nav transition-transform duration-200">
+    <div class="max-w-md mx-auto grid grid-cols-5 items-center text-center">
+      
+      <!-- 1. Home -->
+      <a href="#landing" class="mobile-bottom-item flex flex-col items-center justify-center py-1 text-slate-500 hover:text-cobalt-600 transition" data-bottom-nav="landing">
+        <i data-lucide="home" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-medium leading-none" data-i18n="navHome">Home</span>
+      </a>
+
+      <!-- 2. Browse -->
+      <a href="#browse" class="mobile-bottom-item flex flex-col items-center justify-center py-1 text-slate-500 hover:text-cobalt-600 transition" data-bottom-nav="browse">
+        <i data-lucide="compass" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-medium leading-none" data-i18n="navBrowse">Browse</span>
+      </a>
+
+      <!-- 3. Report (Center Floating Action Icon) -->
+      <a href="#report" class="mobile-bottom-item flex flex-col items-center justify-center -mt-4 group" data-bottom-nav="report">
+        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-cobalt-700 to-cobalt-500 text-white shadow-lg shadow-cobalt-600/30 flex items-center justify-center group-active:scale-95 transition-transform border-4 border-white">
+          <i data-lucide="plus" class="w-5 h-5 stroke-[2.5]"></i>
+        </div>
+        <span class="text-[10px] font-bold text-cobalt-700 mt-0.5 leading-none" data-i18n="navReport">Report</span>
+      </a>
+
+      <!-- 4. Matching -->
+      <a href="#matching" class="mobile-bottom-item flex flex-col items-center justify-center py-1 text-slate-500 hover:text-cobalt-600 transition" data-bottom-nav="matching">
+        <i data-lucide="sparkles" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-medium leading-none" data-i18n="navMatching">Matches</span>
+      </a>
+
+      <!-- 5. My Reports -->
+      <a href="#my-reports" class="mobile-bottom-item flex flex-col items-center justify-center py-1 text-slate-500 hover:text-cobalt-600 transition" data-bottom-nav="my-reports">
+        <i data-lucide="folder-check" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-medium leading-none" data-i18n="navMyReports">Reports</span>
+      </a>
+
+    </div>
+  </nav>
+
+  <!-- ========================================================================= -->
   <!-- TOAST NOTIFICATIONS POPUP -->
   <!-- ========================================================================= -->
-  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+  <div id="toast-container" class="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 left-4 sm:left-auto z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
 
   <!-- Core JavaScript Modules -->
   <script src="js/data.js"></script>
