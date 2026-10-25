@@ -2,8 +2,8 @@
 
 > **Tagline**: *"Lost something? Let's bring it home."*  
 > **Course Capstone**: University Data Structures & Algorithms  
-> **Core Implementation**: C++17 with Zero-STL Manual Data Structures  
-> **Presentation Prototype**: Modern Responsive Client with Arabic RTL Support & Local Storage
+> **Core Implementation**: C++17 with Zero-STL Manual Data Structures (`/cpp`)  
+> **Enterprise Web Layer**: Google OAuth & GIS, Strict Server RBAC, Supabase RLS, Premium Dark UI, Arabic RTL Support
 
 ---
 
@@ -11,103 +11,194 @@
 
 **FoundIt** is an enterprise-grade university Lost & Found software solution designed to solve the common campus problem of lost student possessions (IDs, laptops, headphones, keys, notebooks, and water bottles).
 
-### Academic Requirement Alignment
-1. **Core Data Structures Implementation (`/cpp`)**:
-   - The algorithmic heart and memory management are **authored in pure C++17** without using `std::vector`, `std::map`, or other high-level STL containers.
+### Academic Requirement Alignment & Technology Separation
+1. **Academic Data Structures Core (`/cpp`)**:
+   - The algorithmic heart, memory management, and complexity proofs are **authored in pure C++17** without using `std::vector`, `std::map`, or other high-level STL containers.
    - All 5 required structures are **manually built** using dynamic node allocation, memory pointers, and bounds-checked arrays:
      1. **Hash Table** with separate chaining & djb2 rolling polynomial hash for $O(1)$ item lookup.
-     2. **Singly Linked List** for dynamic sequential report storage and candidate chains.
+     2. **Singly Linked List** for dynamic sequential report storage, collision chains, and candidate lists.
      3. **Queue (FIFO)** to enforce fairness in administrative moderation of incoming reports.
      4. **Stack (LIFO)** to enable instant, lossless action undo for accidental edits or deletions.
      5. **Fixed Array** for static campus zone categorization and constant-time indexing.
-2. **Web Application Prototype (`index.html`)**:
-   - A self-contained, responsive, multi-page frontend prototype for student and staff interaction.
-   - Built with Tailwind CSS, semantic HTML5, Lucide icons, Inter + Cairo fonts, and complete English & Arabic RTL support.
-   - Client persistence via browser `localStorage` under `foundit_reports_v1`.
-   - **Explicit Disclosure**: Frontend JavaScript is used for human UI presentation and prototype testing; it does not replace the required C++ core data structures.
+2. **Modern Web Application (`index.html`, `/js`, `/css`)**:
+   - A modern responsive client layer designed with a **Premium Dark UI (#0B1020, #111827, #172033)**, real Google OAuth, strict role-based access control, and complete English & Arabic RTL support.
+   - Supports live cloud deployment via **Supabase Authentication & Database** or standalone local execution via a secure, compliant local authentication sandbox.
+   - **Academic Disclosure**: The web interface visualizes the algorithms and delivers real-world user interaction; it does not replace the academic zero-STL C++ core.
 
 ---
 
-## 2. Information Architecture & Key Pages
+## 2. Premium Dark UI & Color Architecture
 
-| Page / Route | Purpose & Key Features |
-|---|---|
-| **Landing (`#landing`)** | Hero search bar, primary "Report Lost" & secondary "Report Found" CTA buttons, campus recovery stats (142+ reunited), category shortcuts, how-it-works workflow, trust highlights, and recent catalog preview. |
-| **Browse Items (`#browse`)** | Full searchable, filterable, sortable catalog. Filters by Type (Lost/Found), Category, Campus Building, Status, and Date. Grid & List views, real-time result counts, filter chips, and empty states. |
-| **Item Details Modal** | Deep item inspection with realistic photo previews, category & status badges, building location, lifecycle progress tracker (Submitted $\rightarrow$ Reviewed $\rightarrow$ Matched $\rightarrow$ Returned), and top heuristic candidate suggestions. |
-| **Safe Claim Flow** | Privacy-first claim verification modal. Protects student contact info by asking identifying questions (serial number, scratches, stickers, exact time) forwarded exclusively to university handover desks. |
-| **Report Wizard (`#report`)** | 4-step wizard with real-time field validation, date constraints (cannot be in the future), title length checks, campus zone dropdowns, preset photo selection, and instant persistence. |
-| **Smart Matching (`#matching`)** | Transparent multi-factor heuristic matching engine: Category Parity (35%), Keyword Overlap (30%), Building Proximity (20%), and Date Delta (15%). Includes interactive academic test case sandboxes. |
-| **My Reports (`#my-reports`)** | Student listing management. Edit, delete with confirmation, jump to candidate matches, and **Stack-powered Undo** to instantly restore deleted records in $O(1)$ time. |
-| **Admin Dashboard (`#admin`)** | Staff moderation console with FIFO review queue, one-click approvals/rejections, duplicate alert scanner, system audit event logs, and role switcher. |
-| **Academic Core (`#about`)** | Dedicated showcase featuring a live interactive visualizer for Hash Table buckets, FIFO Queue, and LIFO Stack; in-browser C++ source code viewer; Big-O complexity tables; and verified test suites. |
+The application is styled with a consistent dark theme enabled by default, featuring a theme toggle with `localStorage` persistence:
 
----
-
-## 3. Data Structures & Algorithmic Complexity
-
-| Structure | C++ Class / File | Algorithmic Role in System | Time Complexity (Avg) | Time Complexity (Worst) | Space Complexity |
-|---|---|---|---|---|---|
-| **Hash Table** | `FoundIt::HashTable<V>` (`cpp/FoundItCore.hpp`) | Instant lookup of reports by `id` key. djb2 rolling hash function with separate chaining collision resolution and load factor auto-rehashing at $> 0.75$. | **$O(1)$** | $O(N)$ (all keys collide) | $O(N + M)$ |
-| **Singly Linked List** | `FoundIt::LinkedList<T>` (`cpp/FoundItCore.hpp`) | Dynamic linear sequence of active reports, collision chains, and match candidate lists. Node pointers `Node* next`. | **$O(1)$** append | $O(N)$ search | $O(N)$ |
-| **FIFO Queue** | `FoundIt::Queue<T>` (`cpp/FoundItCore.hpp`) | Admin moderation queue. Newly reported items with status `under_review` are enqueued at rear and dequeued from front. | **$O(1)$** enqueue / dequeue | $O(1)$ | $O(Q)$ |
-| **LIFO Stack** | `FoundIt::Stack<T>` (`cpp/FoundItCore.hpp`) | Action undo log. Every deletion, update, or addition is pushed onto the stack. Popping restores the previous snapshot. | **$O(1)$** push / pop | $O(1)$ | $O(U)$ |
-| **Fixed Array** | `FoundIt::CustomArray<T, N>` (`cpp/FoundItCore.hpp`) | Fixed-capacity campus zones and category taxonomy with compile-time allocation and runtime bounds checking. | **$O(1)$** lookup | $O(1)$ | $O(K)$ |
+| Token / Element | Color Value | Purpose |
+|---|---|---|
+| **Main Background** | `#0B1020` | Core page body background |
+| **Secondary Background** | `#111827` | Header, drawer, inner panels, table rows |
+| **Cards & Panels** | `#172033` | Elevated SaaS cards, modals, form containers |
+| **Card Hover** | `#1E2A42` | Interactive element hover states |
+| **Primary Accent** | `#6366F1` (Indigo) | Primary buttons, active tabs, brand gradients |
+| **Secondary Accent** | `#22D3EE` (Cyan) | Sub-accents, student badges, link highlights |
+| **Success** | `#34D399` | Approved statuses, strong matches, verified icons |
+| **Warning** | `#FBBF24` | FIFO moderation queue, pending verification alerts |
+| **Error / Destructive** | `#F87171` | Delete dialogs, 403 Access Denied, errors |
+| **Main Text** | `#F8FAFC` | Primary typography and headings |
+| **Secondary Text** | `#94A3B8` | Descriptive labels, metadata, secondary text |
+| **Borders** | `#293449` | Subtle structural dividers and input outlines |
 
 ---
 
-## 4. Heuristic Matching Engine Formula
+## 3. Advanced Authentication & Google Sign-In
 
-The smart matching score (0–100%) correlates complementary pairs (one **Lost** item and one **Found** item):
+FoundIt implements real Google OAuth and enterprise security standards:
 
-$$\text{MatchScore} = S_{\text{category}} + S_{\text{keywords}} + S_{\text{location}} + S_{\text{date}}$$
+```mermaid
+graph TD
+    A["User clicks 'Continue with Google'"] --> B["Google Identity Services (GIS) / Supabase OAuth"]
+    B --> C["Google Account Consent & Identity Verification"]
+    C --> D["Secure Validation of OAuth Token"]
+    D --> E["Retrieve / Provision User Record"]
+    E --> F{"Is User Authorized Admin?"}
+    F -->|Yes| G["Redirect to Admin Console (#admin)"]
+    F -->|No / New User| H["Assign Student Role & Redirect (#dashboard)"]
+```
 
-1. **Category Compatibility ($S_{\text{category}} \le 35$)**:
-   - Exact category parity = $+35$ points.
-   - Different category = $0$ points.
-2. **Keyword & Token Overlap ($S_{\text{keywords}} \le 30$)**:
-   - Normalized text tokenization, removing stop words.
-   - $+8$ points per shared keyword (capped at 30).
-3. **Campus Location Proximity ($S_{\text{location}} \le 20$)**:
-   - Same campus zone / building = $+20$ points.
-   - Different campus zone = $+5$ points.
-4. **Date Proximity ($S_{\text{date}} \le 15$)**:
-   - Within $\le 1$ day: $+15$ points.
-   - Within $\le 3$ days: $+12$ points.
-   - Within $\le 7$ days: $+8$ points.
-   - Within $\le 14$ days: $+4$ points.
-   - $> 14$ days: $0$ points.
-
-### Confidence Thresholds:
-- **Strong Match**: $\ge 75\%$
-- **Possible Match**: $45\% - 74\%$
-- **Low Match**: $< 45\%$
-- **Incompatible**: Same report types (e.g., Lost vs Lost $\rightarrow 0\%$)
-
----
-
-## 5. Seed Campus Data (10 Realistic University Records)
-
-The platform is seeded with 10 realistic university records:
-1. `RPT-2026-001` (Found): Blue University Student ID Card (Sarah Jenkins) — Main Library
-2. `RPT-2026-002` (Lost): Sony WH-1000XM4 Black Wireless Headphones — Engineering Hall
-3. `RPT-2026-003` (Found): Matte Black Sony Noise-Canceling Headphones — Engineering Hall
-4. `RPT-2026-004` (Lost): Advanced Calculus MTH201 Spiral Notebook — Science Lecture Halls
-5. `RPT-2026-005` (Found): Set of Brass Dorm Keys with Red Campus Lanyard — Student Center
-6. `RPT-2026-006` (Lost): Hydro Flask 32oz Teal Insulated Water Bottle — Campus Gymnasium
-7. `RPT-2026-007` (Lost): TI-84 Plus CE Graphing Calculator (Rose Gold) — Mathematics Labs
-8. `RPT-2026-008` (Lost): North Face Borealis Navy Backpack with 15" Laptop — Bus Terminal
-9. `RPT-2026-009` (Found): Apple AirPods Pro (2nd Gen) with White Case — Student Center
-10. `RPT-2026-010` (Found): Silver 67W USB-C Power Adapter for MacBook — Design Studios
+### Authentication Features:
+1. **Google Sign-In**: Official Google-branded button integrating Google Identity Services (`accounts.google.com/gsi/client`) and Supabase OAuth (`supabase.auth.signInWithOAuth`).
+2. **Email & Password Registration**:
+   - Every registration assigns the **Regular Student** role by default.
+   - Enforces SHA-256 password hashing via Web Crypto API (`crypto.subtle.digest`).
+   - Requires email verification with a **single-use 6-digit code expiring in 10 minutes**.
+   - Enforces rate limiting on code resends (60-second cooldown).
+   - Inactivates code after 3 incorrect attempts.
+3. **Password Recovery**: Single-use reset tokens with 15-minute expiration.
+4. **Session Timeout & Inactivity**: Sessions automatically expire after 30 minutes of inactivity and route to `#session-expired`.
+5. **Brute-Force Protection**: 5 consecutive failed login attempts trigger a 5-minute security lockout.
 
 ---
 
-## 6. Running the C++ Implementation
+## 4. Two Distinct Roles & Access Control (RBAC)
+
+### A. Regular Student
+Every normal registration or new Google login creates a student account by default.
+- Search, filter, and inspect campus items.
+- Submit new lost and found reports.
+- View heuristic matching suggestions.
+- Access personalized **Student Command Dashboard** (`#dashboard`).
+- Edit or delete **only their own eligible reports** (enforced by ownership checks).
+- Instant **LIFO Stack Undo** to restore deleted items.
+- Submit ownership verification claims for found items.
+- View claim progress.
+- **Strictly blocked from accessing administrative routes or moderation tools.**
+
+### B. Campus Administrator
+Dedicated command console (`#admin`) for university handover staff:
+- View all catalog items and registered users.
+- Moderate the **FIFO Review Queue**: one-click approval, rejection, or flagging.
+- Direct status modification (`open`, `under_review`, `matched`, `returned`, `closed`).
+- **Safe Claims Desk**: Inspect students' verification questions (serial numbers, scratch details, exact times) and authorize handover.
+- User Management: Suspend or reactivate student accounts.
+- System & Security Audit Logs: Real-time stream of all authentication and database events.
+- Cloud & OAuth Settings: Configure Supabase URL, Anon Key, Google Client ID, test connectivity, and copy PostgreSQL RLS migration scripts.
+
+### Security Guarantees:
+- **No Self-Elevation**: Users cannot select their role during registration.
+- **Route Guards**: Students attempting to load `#admin` are blocked and routed to `#access-denied` (HTTP 403 Forbidden).
+- **Ownership Verification**: Attempts by students to edit or delete another student's report are rejected and recorded as security violations.
+- **Contact Privacy**: Student phone numbers and emails are masked in public views (`Handover Relay [Protected]`).
+
+---
+
+## 5. PostgreSQL Database Schema & Row Level Security (RLS)
+
+When deployed with Supabase, security is enforced at the database engine level via PostgreSQL Row Level Security:
+
+```sql
+-- 1. PROFILES (Strict RBAC)
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'student' CHECK (role IN ('student', 'admin')),
+  student_id TEXT,
+  avatar_url TEXT,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'suspended')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public profiles read" ON public.profiles FOR SELECT TO authenticated USING (true);
+
+-- User cannot elevate their own role
+CREATE POLICY "Users update own non-role profile" ON public.profiles FOR UPDATE TO authenticated
+USING (auth.uid() = id)
+WITH CHECK (auth.uid() = id AND role = (SELECT role FROM public.profiles WHERE id = auth.uid()));
+
+CREATE POLICY "Admins moderate profiles" ON public.profiles FOR ALL TO authenticated
+USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+-- 2. REPORTS TABLE WITH OWNERSHIP ENFORCEMENT
+CREATE TABLE IF NOT EXISTS public.reports (
+  id TEXT PRIMARY KEY,
+  type TEXT NOT NULL CHECK (type IN ('lost', 'found')),
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  description TEXT NOT NULL,
+  date DATE NOT NULL,
+  zone TEXT NOT NULL,
+  location_detail TEXT,
+  status TEXT NOT NULL DEFAULT 'under_review' CHECK (status IN ('under_review', 'open', 'matched', 'returned', 'closed')),
+  reporter_id UUID REFERENCES public.profiles(id),
+  reporter_email TEXT,
+  image_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Read reports" ON public.reports FOR SELECT TO authenticated
+USING (status != 'under_review' OR reporter_id = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "Students insert reports" ON public.reports FOR INSERT TO authenticated
+WITH CHECK (reporter_id = auth.uid() AND status = 'under_review');
+
+CREATE POLICY "Students update own reports" ON public.reports FOR UPDATE TO authenticated
+USING (reporter_id = auth.uid()) WITH CHECK (reporter_id = auth.uid());
+
+CREATE POLICY "Admins moderate all reports" ON public.reports FOR ALL TO authenticated
+USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+```
+
+---
+
+## 6. Information Architecture & Key Routes
+
+| Route | View Name | Role Access | Key Features |
+|---|---|---|---|
+| `#landing` | Landing Page | Public | Hero search, campus recovery metrics, category shortcuts, recent catalog preview |
+| `#browse` | Browse Items | Public | Filter by lost/found, category, building, status, date; list/grid toggle |
+| `#report` | Report Wizard | Authenticated | 4-step wizard with real-time field validation, date constraints, photo presets |
+| `#matching` | Smart Matching | Public | Multi-factor heuristic engine scoring categories (35%), keywords (30%), zone (20%), date (15%) |
+| `#dashboard` | Student Dashboard | Student & Admin | Personalized greeting, active reports, AI match candidates, safe claims tracker, LIFO Undo |
+| `#admin` | Admin Console | Administrator Only | FIFO review queue, master catalog table, claims desk, user moderation, audit log, cloud config |
+| `#about` | Academic Core | Public | Live visualizer for Hash Table, FIFO Queue, LIFO Stack, C++ code viewer, Big-O tables |
+| `#login` | Sign In | Public | Google OAuth button, email/password form, password toggle, sandbox quick-fill credentials |
+| `#register` | Register Account | Public | Student signup, password strength gauge, default student role disclosure |
+| `#verify-email` | Verify Email | Public | 6-digit expiring code input, countdown timer, 60s resend cooldown, attempt limiter |
+| `#forgot-password` | Forgot Password | Public | Single-use recovery link request with expiring tokens |
+| `#reset-password` | Reset Password | Public | Secure token verification and password update |
+| `#access-denied` | 403 Forbidden | Authenticated | Security shield blocking non-admins with quick return to student dashboard |
+| `#session-expired` | Session Timeout | Public | Friendly timeout lock screen explaining 30-minute inactivity policy |
+
+---
+
+## 7. Running the Academic C++ Implementation
 
 ### Prerequisites
 - Any C++17 compliant compiler (`g++`, `clang++`, or MSVC `cl.exe`).
 
-### Compilation & Test Execution
+### Compilation & Automated Tests
 ```bash
 # Navigate to cpp directory
 cd cpp
@@ -119,28 +210,18 @@ g++ -std=c++17 -Wall -Wextra -O2 FoundItCore.cpp -o foundit_core
 ./foundit_core
 ```
 
-### Verified Automated Test Cases:
-1. Seeding realistic campus records.
-2. Hash Table $O(1)$ key lookup and `nullptr` handling.
-3. Exact / Strong Match evaluation ($>80\%$).
-4. Unrelated items evaluation ($<20\%$).
-5. Edge cases: same-type rejection, empty title/ID rejection.
-6. Invalid date rejection (e.g., month > 12).
-7. FIFO Queue moderation enqueue and dequeue sequence.
-8. LIFO Stack deletion reversal & state restoration.
-9. Safe non-existent ID deletion handling.
-10. Hash Table bucket distribution and load factor verification.
-
 ---
 
-## 7. How to Launch the Web Prototype
+## 8. Launching the Web Application
 
-The web application is self-contained and zero-dependency:
-1. Simply double-click `index.html` or open it in any modern browser (Chrome, Edge, Firefox, Safari).
-2. Or serve it via any static web server:
+The application is completely self-contained:
+1. Double-click `index.html` in any modern web browser, or serve it using any local static server:
    ```bash
    npx serve .
    # or
    python -m http.server 8000
    ```
-3. Use the top navigation bar to explore the 8 views, test the Arabic RTL toggle, simulate moderation queues, inspect Hash Table buckets, or submit new item reports.
+2. **Pre-seeded Evaluation Accounts**:
+   - **Administrator**: `admin@campus.edu` (Password: `Admin@FoundIt2026!`)
+   - **Regular Student**: `sarah.jenkins@student.edu` (Password: `Student@FoundIt2026!`)
+   - Or click the **One-Click Role Test Credentials** buttons on the login page for instant authentication without typing!

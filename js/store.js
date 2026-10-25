@@ -1,8 +1,8 @@
 /**
  * FoundIt - Client Store & Data Structures Simulation Coordinator
  * 
- * Provides responsive client-side state, local persistence, and
- * visual reflection of the C++ data structures (Hash Table, Linked List,
+ * Provides responsive client-side state, local persistence, role-based authorization,
+ * and visual reflection of the C++ data structures (Hash Table, Linked List,
  * FIFO Queue, LIFO Stack, Array).
  */
 
@@ -46,6 +46,8 @@ class FoundItStore {
     const savedClaims = localStorage.getItem(this.CLAIMS_KEY);
     if (savedClaims) {
       try { this.claims = JSON.parse(savedClaims); } catch (e) { this.claims = []; }
+    } else {
+      this.seedInitialClaims();
     }
 
     const savedStack = localStorage.getItem(this.STACK_KEY);
@@ -54,6 +56,24 @@ class FoundItStore {
     }
 
     this.rebuildDataStructures();
+  }
+
+  seedInitialClaims() {
+    this.claims = [
+      {
+        id: 'CLM-2026-001',
+        reportId: 'RPT-2026-001',
+        studentEmail: 'sarah.jenkins@student.edu',
+        studentName: 'Sarah Jenkins',
+        studentId: 'STD-2024-8841',
+        q1: 'Card has computer science department logo with student ID ending in 8841',
+        q2: 'Left on study desk 42 in 2nd floor library around 9:00 AM',
+        q3: 'Student portal profile photo matches the card',
+        timestamp: '2026-10-23T11:00:00Z',
+        status: 'pending_verification'
+      }
+    ];
+    localStorage.setItem(this.CLAIMS_KEY, JSON.stringify(this.claims));
   }
 
   saveReports() {
@@ -94,6 +114,29 @@ class FoundItStore {
     this.reviewQueue = this.reports.filter(r => r.status === 'under_review');
   }
 
+  // --- ROLE-BASED ACCESS CONTROL FOR REPORTS ---
+
+  canModifyReport(reportId) {
+    if (!window.foundItAuth || !window.foundItAuth.isAuthenticated()) {
+      return false;
+    }
+    // Administrator can modify all reports
+    if (window.foundItAuth.isAdmin()) {
+      return true;
+    }
+    // Student can only modify their own reports
+    const report = this.getReportById(reportId);
+    if (!report) return false;
+
+    const user = window.foundItAuth.currentUser;
+    return (
+      report.reporterId === user.id ||
+      report.reporterRef === user.id ||
+      report.reporterEmail === user.email ||
+      (user.email && report.description && report.description.includes(user.email))
+    );
+  }
+
   // --- CRUD OPERATIONS ---
 
   getAllReports() {
@@ -115,6 +158,7 @@ class FoundItStore {
   addReport(newReportData) {
     const id = 'RPT-2026-' + String(Math.floor(100 + Math.random() * 900));
     const now = new Date().toISOString();
+    const currentUser = window.foundItAuth ? window.foundItAuth.currentUser : null;
     
     const newReport = {
       id,
@@ -124,11 +168,13 @@ class FoundItStore {
       description: newReportData.description.trim(),
       date: newReportData.date,
       zone: newReportData.zone,
-      locationDetail: newReportData.locationDetail || 'Main entrance / hallway',
+      locationDetail: newReportData.locationDetail || 'Main campus area',
       keywords: newReportData.keywords || newReportData.title.toLowerCase(),
       status: 'under_review', // Queued for admin moderation by default
-      reporterRef: newReportData.reporterRef || 'student_web_' + id.slice(-3),
-      reporterName: newReportData.reporterName || 'Campus Student',
+      reporterId: currentUser ? currentUser.id : 'student_anon',
+      reporterEmail: currentUser ? currentUser.email : 'student@campus.edu',
+      reporterRef: currentUser ? currentUser.id : 'student_web_' + id.slice(-3),
+      reporterName: currentUser ? currentUser.name : (newReportData.reporterName || 'Campus Student'),
       contactMethod: newReportData.contactMethod || 'safe_relay',
       image: newReportData.image || 'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?auto=format&fit=crop&w=600&q=80',
       createdAt: now,
@@ -158,6 +204,13 @@ class FoundItStore {
   }
 
   updateReport(id, patch) {
+    if (!this.canModifyReport(id)) {
+      if (window.foundItAuth) {
+        window.foundItAuth.logAuditEvent('SECURITY_VIOLATION', `Unauthorized update attempt on report ${id}`);
+      }
+      throw new Error('Access Denied: You do not have permission to modify this report.');
+    }
+
     const idx = this.reports.findIndex(r => r.id === id);
     if (idx === -1) return false;
 
@@ -175,7 +228,7 @@ class FoundItStore {
 
     this.auditLogs.unshift({
       id: 'LOG-' + Date.now(),
-      text: `Updated report details for ${id} -> Status: ${this.reports[idx].status}`,
+      text: `Updated report ${id} -> Status: ${this.reports[idx].status}`,
       time: new Date().toLocaleString(),
       type: 'update'
     });
@@ -185,6 +238,13 @@ class FoundItStore {
   }
 
   deleteReport(id) {
+    if (!this.canModifyReport(id)) {
+      if (window.foundItAuth) {
+        window.foundItAuth.logAuditEvent('SECURITY_VIOLATION', `Unauthorized delete attempt on report ${id}`);
+      }
+      throw new Error('Access Denied: You do not have permission to delete this report.');
+    }
+
     const idx = this.reports.findIndex(r => r.id === id);
     if (idx === -1) return false;
 
@@ -221,7 +281,6 @@ class FoundItStore {
     const lastAction = this.undoStack.pop();
 
     if (lastAction.action === 'DELETE_REPORT') {
-      // Reinsert the deleted report
       this.reports.unshift(lastAction.deletedSnapshot);
       this.auditLogs.unshift({
         id: 'LOG-' + Date.now(),
@@ -234,7 +293,6 @@ class FoundItStore {
     }
 
     if (lastAction.action === 'ADD_REPORT') {
-      // Remove newly added report
       const idx = this.reports.findIndex(r => r.id === lastAction.reportId);
       if (idx !== -1) {
         this.reports.splice(idx, 1);
@@ -250,7 +308,6 @@ class FoundItStore {
     }
 
     if (lastAction.action === 'UPDATE_REPORT') {
-      // Revert fields
       const idx = this.reports.findIndex(r => r.id === lastAction.reportId);
       if (idx !== -1) {
         this.reports[idx] = lastAction.previousSnapshot;
@@ -269,27 +326,41 @@ class FoundItStore {
   }
 
   /**
-   * Dequeues the earliest report from FIFO Review Queue and sets status to 'open'
+   * Dequeues the earliest report from FIFO Review Queue and approves it
    */
   dequeueAndApprove() {
+    if (!window.foundItAuth || !window.foundItAuth.isAdmin()) {
+      throw new Error('Administrator privileges required to moderate queue.');
+    }
     if (this.reviewQueue.length === 0) return null;
     const target = this.reviewQueue[0];
     this.updateReport(target.id, { status: 'open' });
     return target;
   }
 
+  rejectReport(id) {
+    if (!window.foundItAuth || !window.foundItAuth.isAdmin()) {
+      throw new Error('Administrator privileges required to moderate queue.');
+    }
+    return this.updateReport(id, { status: 'closed' });
+  }
+
   /**
    * Submits a safe ownership claim
    */
   submitClaim(reportId, claimData) {
+    const user = window.foundItAuth ? window.foundItAuth.currentUser : null;
     const claim = {
       id: 'CLM-' + Date.now(),
       reportId,
+      studentId: user ? user.studentId || user.id : 'STD-GUEST',
+      studentName: user ? user.name : 'Campus Student',
+      studentEmail: user ? user.email : 'student@campus.edu',
       ...claimData,
       timestamp: new Date().toISOString(),
       status: 'pending_verification'
     };
-    this.claims.push(claim);
+    this.claims.unshift(claim);
     localStorage.setItem(this.CLAIMS_KEY, JSON.stringify(this.claims));
 
     this.auditLogs.unshift({
@@ -302,6 +373,32 @@ class FoundItStore {
     return claim;
   }
 
+  updateClaimStatus(claimId, status) {
+    if (!window.foundItAuth || !window.foundItAuth.isAdmin()) {
+      throw new Error('Administrator privileges required.');
+    }
+    const idx = this.claims.findIndex(c => c.id === claimId);
+    if (idx === -1) return false;
+    this.claims[idx].status = status;
+    localStorage.setItem(this.CLAIMS_KEY, JSON.stringify(this.claims));
+    this.auditLogs.unshift({
+      id: 'LOG-' + Date.now(),
+      text: `Claim ${claimId} status updated to ${status}`,
+      time: new Date().toLocaleString(),
+      type: 'claim'
+    });
+    localStorage.setItem(this.AUDIT_KEY, JSON.stringify(this.auditLogs));
+    return true;
+  }
+
+  getClaims() {
+    return [...this.claims];
+  }
+
+  getUserClaims(email) {
+    return this.claims.filter(c => c.studentEmail === email);
+  }
+
   /**
    * Resets demo data to initial university records
    */
@@ -309,6 +406,7 @@ class FoundItStore {
     this.reports = JSON.parse(JSON.stringify(window.FOUNDIT_DATA.SEED_REPORTS));
     this.undoStack = [];
     this.claims = [];
+    this.seedInitialClaims();
     this.seedAuditLogs();
     this.saveReports();
   }

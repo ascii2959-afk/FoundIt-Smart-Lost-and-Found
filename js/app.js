@@ -145,46 +145,226 @@
     window.location.hash = hash;
   }
 
+  function updateNavbarAuth() {
+    const auth = window.foundItAuth;
+    const isAuthed = auth && auth.isAuthenticated();
+    const user = isAuthed ? auth.currentUser : null;
+    const isAdmin = auth && auth.isAdmin();
+
+    // 1. Desktop Nav Links
+    const adminLink = document.getElementById('nav-item-admin-dash');
+    const studentDashLink = document.getElementById('nav-item-student-dash');
+    if (adminLink) {
+      if (isAdmin) {
+        adminLink.classList.remove('hidden');
+        adminLink.classList.add('flex');
+      } else {
+        adminLink.classList.add('hidden');
+        adminLink.classList.remove('flex');
+      }
+    }
+    if (studentDashLink) {
+      if (isAuthed) {
+        studentDashLink.classList.remove('hidden');
+      } else {
+        studentDashLink.classList.add('hidden');
+      }
+    }
+
+    // 2. Mobile Nav Links
+    const mobileAdminLink = document.getElementById('mobile-nav-admin-dash');
+    const mobileStudentDashLink = document.getElementById('mobile-nav-student-dash');
+    if (mobileAdminLink) {
+      if (isAdmin) {
+        mobileAdminLink.classList.remove('hidden');
+      } else {
+        mobileAdminLink.classList.add('hidden');
+      }
+    }
+    if (mobileStudentDashLink) {
+      if (isAuthed) {
+        mobileStudentDashLink.classList.remove('hidden');
+      } else {
+        mobileStudentDashLink.classList.add('hidden');
+      }
+    }
+
+    // 3. Desktop Auth Container
+    const desktopContainer = document.getElementById('nav-auth-container');
+    if (desktopContainer) {
+      if (isAuthed && user) {
+        desktopContainer.innerHTML = `
+          <div class="flex items-center gap-2 pl-2 border-l border-[#293449]">
+            <a href="${isAdmin ? '#admin' : '#dashboard'}" class="flex items-center gap-2 py-1 px-2 rounded-xl hover:bg-[#172033] transition group" title="Account: ${user.name}">
+              <img src="${user.avatar || 'https://api.dicebear.com/7.x/initials/svg?seed=User'}" class="w-8 h-8 rounded-lg object-cover border border-[#293449]" alt="">
+              <div class="hidden xl:block text-left rtl:text-right">
+                <div class="text-xs font-bold text-[#F8FAFC] group-hover:text-[#22D3EE] transition leading-tight">${user.name.split(' ')[0]}</div>
+                <div class="text-[9px] font-extrabold uppercase tracking-wider ${isAdmin ? 'text-[#FBBF24]' : 'text-[#22D3EE]'}">${user.role}</div>
+              </div>
+            </a>
+            <button id="btn-desktop-signout" class="p-2 text-[#94A3B8] hover:text-rose-400 hover:bg-rose-950/30 rounded-lg transition" title="Sign Out">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `;
+        const signoutBtn = document.getElementById('btn-desktop-signout');
+        if (signoutBtn) {
+          signoutBtn.addEventListener('click', () => {
+            sound.playClick();
+            auth.signOut();
+            showToast('Signed out successfully', 'info');
+          });
+        }
+      } else {
+        desktopContainer.innerHTML = `
+          <div class="flex items-center gap-1.5 pl-2 border-l border-[#293449]">
+            <a href="#login" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#F8FAFC] hover:bg-[#172033] transition" data-i18n="btnSignIn">
+              Sign In
+            </a>
+            <a href="#register" class="px-3 py-1.5 rounded-lg bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-semibold shadow-xs transition" data-i18n="btnRegister">
+              Register
+            </a>
+          </div>
+        `;
+      }
+    }
+
+    // 4. Mobile Drawer Auth Section
+    const mobileSection = document.getElementById('mobile-auth-section');
+    if (mobileSection) {
+      if (isAuthed && user) {
+        mobileSection.innerHTML = `
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <img src="${user.avatar || 'https://api.dicebear.com/7.x/initials/svg?seed=User'}" class="w-9 h-9 rounded-xl object-cover border border-[#293449]" alt="">
+              <div>
+                <div class="text-xs font-bold text-[#F8FAFC]">${user.name}</div>
+                <div class="text-[10px] text-[#94A3B8] truncate max-w-[160px]">${user.email}</div>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isAdmin ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30' : 'bg-cyan-950/60 text-cyan-300 border border-cyan-500/30'}">
+              ${user.role}
+            </span>
+          </div>
+          <div class="pt-2 border-t border-[#293449] flex items-center justify-between text-xs">
+            <a href="${isAdmin ? '#admin' : '#dashboard'}" class="text-[#22D3EE] font-semibold hover:underline">
+              View Dashboard
+            </a>
+            <button id="btn-mobile-signout" class="text-rose-400 font-semibold hover:underline flex items-center gap-1">
+              <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        `;
+        const mobileSignoutBtn = document.getElementById('btn-mobile-signout');
+        if (mobileSignoutBtn) {
+          mobileSignoutBtn.addEventListener('click', () => {
+            sound.playClick();
+            auth.signOut();
+            showToast('Signed out successfully', 'info');
+          });
+        }
+      } else {
+        mobileSection.innerHTML = `
+          <div class="text-xs text-[#94A3B8] mb-2">Sign in to track your lost items & safe claims</div>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="#login" class="py-2 text-center rounded-xl bg-[#6366F1] text-white font-bold text-xs shadow-xs">
+              Sign In
+            </a>
+            <a href="#register" class="py-2 text-center rounded-xl bg-[#172033] border border-[#293449] text-[#F8FAFC] font-bold text-xs">
+              Register
+            </a>
+          </div>
+        `;
+      }
+    }
+
+    if (window.lucide) window.lucide.createIcons();
+  }
+
   function handleRoute() {
     const { path, params } = parseHash();
+
+    // Check session timeout
+    if (window.foundItAuth) {
+      window.foundItAuth.checkSessionValidity();
+    }
+
+    const auth = window.foundItAuth;
+    const isAuthed = auth && auth.isAuthenticated();
+    const isAdmin = auth && auth.isAdmin();
+
+    // 1. RBAC Guard for Admin Console (#admin)
+    if (path === 'admin') {
+      if (!isAuthed) {
+        navigateTo('login', { redirect: 'admin' });
+        return;
+      }
+      if (!isAdmin) {
+        if (auth) {
+          auth.logAuditEvent('AUTH_SECURITY_BLOCKED', 'Student attempted direct access to #admin');
+        }
+        showToast('Access Denied: Administrator privileges required', 'error');
+        navigateTo('access-denied');
+        return;
+      }
+    }
+
+    // 2. Auth Guard for Protected Pages
+    if (path === 'dashboard' || path === 'my-reports' || path === 'report') {
+      if (!isAuthed) {
+        navigateTo('login', { redirect: path });
+        return;
+      }
+    }
+
+    // 3. Prevent logged-in users from visiting login/register
+    if ((path === 'login' || path === 'register') && isAuthed) {
+      navigateTo(isAdmin ? 'admin' : 'dashboard');
+      return;
+    }
+
     state.currentRoute = path;
     state.routeParams = params;
+    state.role = auth && auth.currentUser ? auth.currentUser.role : 'guest';
 
     // Update active nav styling (Desktop)
     document.querySelectorAll('.nav-link').forEach(link => {
       const targetNav = link.getAttribute('data-nav');
-      if (targetNav === path) {
-        link.classList.add('bg-slate-100', 'text-cobalt-700', 'font-semibold');
+      if (targetNav === path || (path === 'my-reports' && targetNav === 'dashboard')) {
+        link.classList.add('bg-[#172033]', 'text-[#22D3EE]', 'font-semibold');
+        link.classList.remove('text-[#94A3B8]');
       } else {
-        link.classList.remove('bg-slate-100', 'text-cobalt-700', 'font-semibold');
+        link.classList.remove('bg-[#172033]', 'text-[#22D3EE]');
+        link.classList.add('text-[#94A3B8]');
       }
     });
 
     // Update active mobile drawer links
     document.querySelectorAll('.mobile-nav-link').forEach(link => {
       const targetNav = link.getAttribute('data-nav');
-      if (targetNav === path) {
-        link.classList.add('bg-cobalt-50', 'text-cobalt-700', 'font-bold');
-        link.classList.remove('text-slate-800');
+      if (targetNav === path || (path === 'my-reports' && targetNav === 'dashboard')) {
+        link.classList.add('bg-[#6366F1]/15', 'text-[#22D3EE]', 'font-bold');
+        link.classList.remove('text-[#F8FAFC]');
       } else {
-        link.classList.remove('bg-cobalt-50', 'text-cobalt-700', 'font-bold');
-        link.classList.add('text-slate-800');
+        link.classList.remove('bg-[#6366F1]/15', 'text-[#22D3EE]', 'font-bold');
+        link.classList.add('text-[#F8FAFC]');
       }
     });
 
-    // Update active mobile bottom app navigation items
+    // Update mobile bottom nav items
     document.querySelectorAll('.mobile-bottom-item').forEach(link => {
       const targetNav = link.getAttribute('data-bottom-nav');
-      if (targetNav === path) {
-        link.classList.add('active', 'text-cobalt-600');
-        link.classList.remove('text-slate-500');
+      if (targetNav === path || (path === 'my-reports' && targetNav === 'dashboard')) {
+        link.classList.add('active', 'text-[#22D3EE]');
+        link.classList.remove('text-[#94A3B8]');
       } else {
-        link.classList.remove('active', 'text-cobalt-600');
-        link.classList.add('text-slate-500');
+        link.classList.remove('active', 'text-[#22D3EE]');
+        link.classList.add('text-[#94A3B8]');
       }
     });
 
-    // Close mobile drawer if open and reset icon
+    // Close mobile drawer if open
     const mobileMenu = document.getElementById('mobile-menu');
     const mobileMenuIcon = document.getElementById('mobile-menu-icon');
     if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
@@ -195,6 +375,7 @@
       }
     }
 
+    updateNavbarAuth();
     renderCurrentView();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -218,13 +399,6 @@
     const langLabel = document.getElementById('lang-label');
     if (langLabel) {
       langLabel.textContent = window.FOUNDIT_I18N.getLang() === 'en' ? 'العربية' : 'English';
-    }
-
-    // Update mobile role badge
-    const mobileRoleBadge = document.getElementById('mobile-role-current-badge');
-    if (mobileRoleBadge) {
-      const isStudent = state.role === 'student';
-      mobileRoleBadge.textContent = isStudent ? (window.FOUNDIT_I18N.getLang() === 'ar' ? 'طالب' : 'Student') : (window.FOUNDIT_I18N.getLang() === 'ar' ? 'مشرف' : 'Staff/Admin');
     }
   }
 
@@ -252,16 +426,69 @@
         setupMatchingListeners();
         break;
       case 'my-reports':
-        container.innerHTML = renderMyReportsView();
-        setupMyReportsListeners();
+      case 'dashboard':
+        if (window.FoundItAuthViews) {
+          container.innerHTML = window.FoundItAuthViews.renderStudentDashboardView();
+          window.FoundItAuthViews.setupStudentDashboardListeners();
+        } else {
+          container.innerHTML = renderMyReportsView();
+          setupMyReportsListeners();
+        }
         break;
       case 'admin':
-        container.innerHTML = renderAdminView();
-        setupAdminListeners();
+        if (window.FoundItAuthViews) {
+          container.innerHTML = window.FoundItAuthViews.renderAdminConsoleView();
+          window.FoundItAuthViews.setupAdminConsoleListeners();
+        } else {
+          container.innerHTML = renderAdminView();
+          setupAdminListeners();
+        }
         break;
       case 'about':
         container.innerHTML = renderAboutView();
         setupAboutListeners();
+        break;
+      case 'login':
+        if (window.FoundItAuthViews) {
+          container.innerHTML = window.FoundItAuthViews.renderLoginView();
+          window.FoundItAuthViews.setupLoginListeners();
+        }
+        break;
+      case 'register':
+        if (window.FoundItAuthViews) {
+          container.innerHTML = window.FoundItAuthViews.renderRegisterView();
+          window.FoundItAuthViews.setupRegisterListeners();
+        }
+        break;
+      case 'verify-email':
+        if (window.FoundItAuthViews) {
+          container.innerHTML = window.FoundItAuthViews.renderVerifyEmailView();
+          window.FoundItAuthViews.setupVerifyEmailListeners();
+        }
+        break;
+      case 'forgot-password':
+        if (window.FoundItAuthViews) {
+          container.innerHTML = window.FoundItAuthViews.renderForgotPasswordView();
+          window.FoundItAuthViews.setupForgotPasswordListeners();
+        }
+        break;
+      case 'reset-password':
+        if (window.FoundItAuthViews) {
+          container.innerHTML = window.FoundItAuthViews.renderResetPasswordView();
+          window.FoundItAuthViews.setupResetPasswordListeners();
+        }
+        break;
+      case 'access-denied':
+        if (window.FoundItAuthViews) {
+          container.innerHTML = window.FoundItAuthViews.renderAccessDeniedView();
+          window.FoundItAuthViews.setupAccessDeniedListeners();
+        }
+        break;
+      case 'session-expired':
+        if (window.FoundItAuthViews) {
+          container.innerHTML = window.FoundItAuthViews.renderSessionExpiredView();
+          window.FoundItAuthViews.setupSessionExpiredListeners();
+        }
         break;
       default:
         container.innerHTML = renderLandingView();
@@ -2558,7 +2785,11 @@ class HashTable {
                 <i data-lucide="calendar" class="w-3.5 h-3.5 text-cobalt-600"></i>
                 ${report.date}
               </span>
-              <p class="text-[11px] text-slate-500 mt-0.5">${report.reporterName}</p>
+              <p class="text-[11px] text-[#94A3B8] mt-0.5">
+                ${(window.foundItAuth && (window.foundItAuth.isAdmin() || (window.foundItAuth.currentUser && (report.reporterId === window.foundItAuth.currentUser.id || report.reporterEmail === window.foundItAuth.currentUser.email)))) 
+                  ? (report.reporterEmail ? `${report.reporterName} (${report.reporterEmail})` : report.reporterName)
+                  : `${report.reporterName} • Handover Relay [Protected]`}
+              </p>
             </div>
           </div>
 
@@ -2754,54 +2985,24 @@ class HashTable {
       });
     }
 
-    // Role switcher (Student / Admin: Desktop & Mobile Drawer)
-    const btnRoleStudent = document.getElementById('btn-role-student');
-    const btnRoleAdmin = document.getElementById('btn-role-admin');
-    const mobileRoleStudent = document.getElementById('mobile-role-student');
-    const mobileRoleAdmin = document.getElementById('mobile-role-admin');
-    const mobileRoleBadge = document.getElementById('mobile-role-current-badge');
-
-    const updateRoleUI = () => {
-      const isStudent = state.role === 'student';
-      if (btnRoleStudent && btnRoleAdmin) {
-        if (isStudent) {
-          btnRoleStudent.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg bg-white shadow-xs text-navy-950 transition';
-          btnRoleAdmin.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-navy-950 transition';
-        } else {
-          btnRoleAdmin.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg bg-navy-950 text-white shadow-xs transition';
-          btnRoleStudent.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-navy-950 transition';
-        }
-      }
-      if (mobileRoleStudent && mobileRoleAdmin) {
-        if (isStudent) {
-          mobileRoleStudent.className = 'py-2 text-xs font-bold rounded-lg bg-cobalt-600 text-white shadow-xs transition';
-          mobileRoleAdmin.className = 'py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-navy-950 transition';
-        } else {
-          mobileRoleAdmin.className = 'py-2 text-xs font-bold rounded-lg bg-navy-950 text-white shadow-xs transition';
-          mobileRoleStudent.className = 'py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-navy-950 transition';
-        }
-      }
-      if (mobileRoleBadge) {
-        mobileRoleBadge.textContent = isStudent ? (window.FOUNDIT_I18N.getLang() === 'ar' ? 'طالب' : 'Student') : (window.FOUNDIT_I18N.getLang() === 'ar' ? 'مشرف' : 'Staff/Admin');
-      }
-    };
-
-    const setRole = (role) => {
+    // Theme toggle (Desktop & Mobile)
+    const themeBtn = document.getElementById('btn-theme-toggle');
+    const mobileThemeBtn = document.getElementById('mobile-theme-toggle');
+    const handleThemeToggle = () => {
       sound.playClick();
-      state.role = role;
-      updateRoleUI();
-      if (role === 'student') {
-        showToast('Switched to Student Portal view', 'info');
-      } else {
-        showToast('Switched to Staff/Administrator view with Moderation Queue access', 'info');
-        navigateTo('admin');
+      if (window.FoundItTheme) {
+        const next = window.FoundItTheme.toggle();
+        showToast(next === 'dark' ? 'Dark theme enabled' : 'Light theme enabled', 'info');
       }
     };
+    if (themeBtn) themeBtn.addEventListener('click', handleThemeToggle);
+    if (mobileThemeBtn) mobileThemeBtn.addEventListener('click', handleThemeToggle);
 
-    if (btnRoleStudent) btnRoleStudent.addEventListener('click', () => setRole('student'));
-    if (btnRoleAdmin) btnRoleAdmin.addEventListener('click', () => setRole('admin'));
-    if (mobileRoleStudent) mobileRoleStudent.addEventListener('click', () => setRole('student'));
-    if (mobileRoleAdmin) mobileRoleAdmin.addEventListener('click', () => setRole('admin'));
+    // Auth change event listener
+    window.addEventListener('foundit_auth_changed', () => {
+      updateNavbarAuth();
+      renderCurrentView();
+    });
 
     // Sound toggle (Desktop & Mobile Drawer)
     const soundBtn = document.getElementById('btn-sound-toggle');
@@ -2937,6 +3138,13 @@ class HashTable {
         resetBrowseFilters();
       }
     });
+    // Expose helpers globally for other modules
+    window.openItemDetails = openItemDetails;
+    window.openClaimModal = openClaimModal;
+    window.openConfirmDialog = openConfirmDialog;
+    window.showToast = showToast;
+    window.renderCurrentView = renderCurrentView;
+    window.navigateTo = navigateTo;
   }
 
   // --- INIT APPLICATION ON DOM READY ---

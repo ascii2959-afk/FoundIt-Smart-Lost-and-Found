@@ -197,7 +197,34 @@ const I18N = {
     footerAcademicNote: 'University Data Structures Capstone Project • C++17 Core + Modern Web Prototype',
     footerLinks: 'Campus Handover Desks',
     btnResetData: 'Restore Sample Campus Data',
-    toastResetSuccess: 'All seed data and data structures have been reset to default state.'
+    toastResetSuccess: 'All seed data and data structures have been reset to default state.',
+
+    // Authentication & RBAC (English)
+    navDashboard: 'Dashboard',
+    btnSignIn: 'Sign In',
+    btnSignOut: 'Sign Out',
+    btnRegister: 'Register',
+    btnContinueGoogle: 'Continue with Google',
+    loginTitle: 'Sign In to FoundIt',
+    loginSubtitle: 'Access university lost & found reports, tracking, and claims',
+    registerTitle: 'Create Student Account',
+    registerSubtitle: 'Join the campus recovery network with your university email',
+    verifyEmailTitle: 'Verify Your University Email',
+    verifyEmailSubtitle: 'Enter the 6-digit verification code dispatched to',
+    forgotPasswordTitle: 'Recover Account Access',
+    forgotPasswordSubtitle: 'We will send a single-use verification link to your registered email',
+    resetPasswordTitle: 'Choose New Password',
+    resetPasswordSubtitle: 'Enter a strong, secure password for your campus account',
+    accessDeniedTitle: 'Access Denied (403 Forbidden)',
+    accessDeniedDesc: 'This area is restricted to campus administrators. Your current student role cannot access administrative moderation tools.',
+    sessionExpiredTitle: 'Session Expired',
+    sessionExpiredDesc: 'Your session has timed out due to inactivity to protect campus data. Please sign in again to continue.',
+    btnSignInAgain: 'Sign In Again',
+    btnReturnDashboard: 'Return to Student Dashboard',
+    studentDashboardTitle: 'Student Command Dashboard',
+    studentDashboardSubtitle: 'Manage your active reports, track potential matches, and check ownership claims',
+    adminDashboardTitle: 'University Administration Console',
+    adminDashboardSubtitle: 'Manage the FIFO review queue, review claims, inspect audit trails, and configure OAuth'
   },
 
   ar: {
@@ -393,7 +420,34 @@ const I18N = {
     footerAcademicNote: 'مشروع تخرج مقرر هياكل البيانات • نواة برمجية بـ C++17 + واجهة تفاعلية حديثة',
     footerLinks: 'مكاتب استلام المفقودات بالحرم',
     btnResetData: 'استعادة بيانات الحرم التجريبية',
-    toastResetSuccess: 'تمت استعادة السجلات التجريبية وهياكل البيانات إلى وضعها الأصلي بنجاح.'
+    toastResetSuccess: 'تمت استعادة السجلات التجريبية وهياكل البيانات إلى وضعها الأصلي بنجاح.',
+
+    // Authentication & RBAC (Arabic)
+    navDashboard: 'لوحة التحكم',
+    btnSignIn: 'تسجيل الدخول',
+    btnSignOut: 'تسجيل الخروج',
+    btnRegister: 'إنشاء حساب',
+    btnContinueGoogle: 'المتابعة باستخدام Google',
+    loginTitle: 'تسجيل الدخول إلى FoundIt',
+    loginSubtitle: 'الوصول إلى بلاغات المفقودات، ومتابعة المطابقات، وإدارة البلاغات',
+    registerTitle: 'إنشاء حساب طالب جديد',
+    registerSubtitle: 'انضم لشبكة استعادة المفقودات الجامعية ببريدك الأكاديمي',
+    verifyEmailTitle: 'تأكيد البريد الإلكتروني الجامعي',
+    verifyEmailSubtitle: 'أدخل رمز التحقق المكون من 6 أرقام المرسل إلى',
+    forgotPasswordTitle: 'استعادة الوصول للحساب',
+    forgotPasswordSubtitle: 'سنرسل رابط تحقق صالح لمرة واحدة لبريدك المسجل',
+    resetPasswordTitle: 'تعيين كلمة مرور جديدة',
+    resetPasswordSubtitle: 'اختر كلمة مرور قوية ومؤمنة لحسابك الجامعي',
+    accessDeniedTitle: 'تم رفض الوصول (غير مصرح 403)',
+    accessDeniedDesc: 'هذه الصفحة مخصصة لمشرفي إدارة الحرم الجامعي فقط. حسابك الحالي كطالب لا يمتلك صلاحية الوصول لهذه الأدوات.',
+    sessionExpiredTitle: 'انتهت صلاحية الجلسة',
+    sessionExpiredDesc: 'انتهت صلاحية جلستك بسبب عدم النشاط لحماية بيانات الحرم الجامعي. يرجى تسجيل الدخول مجدداً للمتابعة بأمان.',
+    btnSignInAgain: 'تسجيل الدخول مجدداً',
+    btnReturnDashboard: 'العودة إلى لوحة تحكم الطالب',
+    studentDashboardTitle: 'لوحة تحكم الطالب',
+    studentDashboardSubtitle: 'إدارة بلاغاتك النشطة، ومتابعة المطابقات المقترحة، والتحقق من طلبات الاستلام',
+    adminDashboardTitle: 'مركز الإدارة والإشراف الجامعي',
+    adminDashboardSubtitle: 'إدارة طابور المراجعة بنظام FIFO وتدقيق طلبات الاستلام ومراجعة سجلات الأمان وإعدادات السحابة'
   }
 };
 
