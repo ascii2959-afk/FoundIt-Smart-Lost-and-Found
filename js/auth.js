@@ -109,43 +109,68 @@ class FoundItAuth {
   // --- PRE-SEEDED VERIFIED ACCOUNTS ---
 
   async seedDefaultAccounts() {
-    const raw = localStorage.getItem(this.USERS_KEY);
-    if (!raw) {
-      const defaultAdminPass = await this.hashPassword('Admin@FoundIt2026!');
-      const defaultStudentPass = await this.hashPassword('Student@FoundIt2026!');
+    const defaultAdminPass = await this.hashPassword('anasali2003#');
+    const defaultStudentPass = await this.hashPassword('anasali2006#');
 
-      const initialUsers = [
-        {
-          id: 'USR-ADMIN-001',
-          email: 'admin@campus.edu',
-          name: 'Campus Handover Authority',
-          role: 'admin',
-          studentId: 'STAFF-9021',
-          passwordHash: defaultAdminPass,
-          emailVerified: true,
-          status: 'active',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-          createdAt: '2026-10-20T08:00:00Z',
-          lastLogin: '2026-10-25T10:00:00Z',
-          provider: 'local'
-        },
-        {
-          id: 'USR-STUDENT-001',
-          email: 'sarah.jenkins@student.edu',
-          name: 'Sarah Jenkins',
-          role: 'student',
-          studentId: 'STD-2024-8841',
-          passwordHash: defaultStudentPass,
-          emailVerified: true,
-          status: 'active',
-          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
-          createdAt: '2026-10-21T09:30:00Z',
-          lastLogin: '2026-10-24T14:20:00Z',
-          provider: 'local'
-        }
-      ];
-      localStorage.setItem(this.USERS_KEY, JSON.stringify(initialUsers));
+    let users = [];
+    const raw = localStorage.getItem(this.USERS_KEY);
+    if (raw) {
+      try {
+        users = JSON.parse(raw);
+      } catch (e) {
+        users = [];
+      }
     }
+
+    // Ensure administrator account has password anasali2003#
+    let admin = users.find(u => u.email.toLowerCase() === 'admin@campus.edu');
+    if (admin) {
+      admin.passwordHash = defaultAdminPass;
+      admin.role = 'admin';
+      admin.emailVerified = true;
+      admin.status = 'active';
+    } else {
+      users.unshift({
+        id: 'USR-ADMIN-001',
+        email: 'admin@campus.edu',
+        name: 'Campus Handover Authority',
+        role: 'admin',
+        studentId: 'STAFF-9021',
+        passwordHash: defaultAdminPass,
+        emailVerified: true,
+        status: 'active',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+        createdAt: '2026-10-20T08:00:00Z',
+        lastLogin: '2026-10-25T10:00:00Z',
+        provider: 'local'
+      });
+    }
+
+    // Ensure student account has password anasali2006#
+    let student = users.find(u => u.email.toLowerCase() === 'sarah.jenkins@student.edu');
+    if (student) {
+      student.passwordHash = defaultStudentPass;
+      student.role = 'student';
+      student.emailVerified = true;
+      student.status = 'active';
+    } else {
+      users.push({
+        id: 'USR-STUDENT-001',
+        email: 'sarah.jenkins@student.edu',
+        name: 'Sarah Jenkins',
+        role: 'student',
+        studentId: 'STD-2024-8841',
+        passwordHash: defaultStudentPass,
+        emailVerified: true,
+        status: 'active',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+        createdAt: '2026-10-21T09:30:00Z',
+        lastLogin: '2026-10-24T14:20:00Z',
+        provider: 'local'
+      });
+    }
+
+    localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
   }
 
   getUsers() {
@@ -479,6 +504,9 @@ class FoundItAuth {
     this.saveUsers(users);
     this.logAuditEvent('AUTH_REGISTER', `New student registered: ${newUser.email} (Verification code issued)`);
 
+    // Dispatch to real Gmail server if running
+    this.dispatchVerificationEmail(newUser.email, verificationCode, newUser.name).catch(() => {});
+
     return {
       success: true,
       requiresVerification: true,
@@ -567,11 +595,42 @@ class FoundItAuth {
     this.saveUsers(users);
     this.logAuditEvent('AUTH_CODE_RESENT', `New verification code generated for ${user.email}`);
 
+    // Dispatch to real Gmail server if running
+    const dispatchResult = await this.dispatchVerificationEmail(user.email, code, user.name);
+
     return {
       success: true,
-      message: 'New verification code has been dispatched.',
+      message: dispatchResult.delivered 
+        ? `Verification code dispatched to your Gmail (${user.email})!` 
+        : 'New verification code has been generated.',
+      deliveredToGmail: dispatchResult.delivered,
       verificationCode: code
     };
+  }
+
+  /**
+   * Helper: Dispatch verification email to local Gmail SMTP server if running
+   */
+  async dispatchVerificationEmail(email, code, name = 'Student') {
+    try {
+      const response = await fetch('http://localhost:3001/api/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code, name })
+      });
+      const data = await response.json();
+      if (data && data.success) {
+        console.log('✅ [FoundIt Auth] Real email sent to Gmail:', email);
+        return { delivered: true, message: data.message };
+      } else {
+        console.warn('⚠️ [FoundIt Auth] Mail server reported:', data ? data.error : 'Unknown error');
+        return { delivered: false, error: data ? data.error : 'Error' };
+      }
+    } catch (e) {
+      // Local mail server not running, fallback silently to sandbox mode
+      console.log('ℹ️ [FoundIt Auth] Local mail server not detected at :3001, using sandbox mode.');
+      return { delivered: false, error: 'Server offline' };
+    }
   }
 
   /**

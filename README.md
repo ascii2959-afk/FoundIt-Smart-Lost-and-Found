@@ -222,6 +222,6 @@ The application is completely self-contained:
    python -m http.server 8000
    ```
 2. **Pre-seeded Evaluation Accounts**:
-   - **Administrator**: `admin@campus.edu` (Password: `Admin@FoundIt2026!`)
-   - **Regular Student**: `sarah.jenkins@student.edu` (Password: `Student@FoundIt2026!`)
+   - **Administrator**: `admin@campus.edu` (Password: `anasali2003#`)
+   - **Regular Student**: `sarah.jenkins@student.edu` (Password: `anasali2006#`)
    - Or click the **One-Click Role Test Credentials** buttons on the login page for instant authentication without typing!

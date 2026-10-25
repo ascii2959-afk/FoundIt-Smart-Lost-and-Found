@@ -232,7 +232,7 @@ window.FoundItAuthViews = (function () {
     if (fillStudent) {
       fillStudent.addEventListener('click', () => {
         document.getElementById('login-email').value = 'sarah.jenkins@student.edu';
-        document.getElementById('login-password').value = 'Student@FoundIt2026!';
+        document.getElementById('login-password').value = 'anasali2006#';
         document.getElementById('form-login').dispatchEvent(new Event('submit'));
       });
     }
@@ -240,7 +240,7 @@ window.FoundItAuthViews = (function () {
     if (fillAdmin) {
       fillAdmin.addEventListener('click', () => {
         document.getElementById('login-email').value = 'admin@campus.edu';
-        document.getElementById('login-password').value = 'Admin@FoundIt2026!';
+        document.getElementById('login-password').value = 'anasali2003#';
         document.getElementById('form-login').dispatchEvent(new Event('submit'));
       });
     }
@@ -421,11 +421,18 @@ window.FoundItAuthViews = (function () {
   function renderVerifyEmailView() {
     const raw = window.location.hash.split('?')[1] || '';
     const params = new URLSearchParams(raw);
-    const email = params.get('email') || '';
+    let email = params.get('email') || '';
 
-    // Check if there is an active demo code for this email to aid sandbox testing
+    // Check if there is an active demo code for this email or latest unverified account
     const users = window.foundItAuth ? window.foundItAuth.getUsers() : [];
-    const target = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    let target = email ? users.find(u => u.email.toLowerCase() === email.toLowerCase()) : null;
+    if (!target) {
+      const unverified = users.filter(u => !u.emailVerified);
+      if (unverified.length > 0) {
+        target = unverified[unverified.length - 1];
+        email = target.email;
+      }
+    }
     const demoCode = target ? target.verificationCode : '';
 
     return `
@@ -438,8 +445,40 @@ window.FoundItAuthViews = (function () {
 
           <h1 class="text-2xl font-extrabold text-[#F8FAFC] tracking-tight mb-2" data-i18n="verifyEmailTitle">${t('verifyEmailTitle')}</h1>
           <p class="text-xs text-[#94A3B8] mb-1" data-i18n="verifyEmailSubtitle">${t('verifyEmailSubtitle')}</p>
-          <div class="inline-block px-3 py-1 rounded-lg bg-[#111827] border border-[#293449] text-xs font-mono font-bold text-[#22D3EE] mb-6">
+          <div class="inline-block px-3 py-1 rounded-lg bg-[#111827] border border-[#293449] text-xs font-mono font-bold text-[#22D3EE] mb-4">
             ${email || 'your-email@campus.edu'}
+          </div>
+
+          <!-- Prominent Notice: Sandbox Mode Explanation -->
+          <div class="mb-5 p-3.5 rounded-2xl bg-[#111827] border border-[#6366F1]/40 text-left text-xs space-y-2">
+            <div class="flex items-center gap-2 text-[#22D3EE] font-bold text-[11px]">
+              <i data-lucide="info" class="w-4 h-4 shrink-0 text-[#22D3EE]"></i>
+              <span>${isAr() ? 'تنبيه بيئة الاختبار (Sandbox Mode)' : 'Offline Evaluation Sandbox Notice'}</span>
+            </div>
+            <p class="text-[#94A3B8] text-[11px] leading-relaxed">
+              ${isAr() 
+                ? 'التطبيق يعمل حالياً كواجهة محلية (Frontend) بدون خادم بريد SMTP خارجي مرتبط، لذلك <strong>لن تصلك رسائل إلى صندوق بريد Gmail الفعلي</strong>. تم توليد كود الأمان أدناه لتجربة التحقق فوراً:' 
+                : 'The application runs client-side without an external SMTP provider configured, so <strong>no actual email is sent to your real Gmail inbox</strong>. Your 6-digit verification code is generated below for instant testing:'}
+            </p>
+            ${demoCode ? `
+              <div class="pt-2 border-t border-[#293449] flex items-center justify-between">
+                <span class="text-[10px] text-[#94A3B8]">${isAr() ? 'كود التحقق:' : 'Security Code:'}</span>
+                <span id="sandbox-code-display" class="font-mono font-extrabold text-base text-[#34D399] tracking-widest bg-[#172033] px-3 py-1 rounded-lg border border-[#34D399]/30">${demoCode}</span>
+                <button type="button" id="btn-autofill-code" class="px-2.5 py-1 rounded-lg bg-[#6366F1]/20 hover:bg-[#6366F1]/40 text-[#22D3EE] text-[11px] font-semibold transition flex items-center gap-1 border border-[#6366F1]/30">
+                  <i data-lucide="copy" class="w-3 h-3"></i>
+                  <span>${isAr() ? 'تعبئة تلقائية' : 'Auto-fill'}</span>
+                </button>
+              </div>
+            ` : `
+              <div id="sandbox-code-container" class="pt-2 border-t border-[#293449] hidden items-center justify-between">
+                <span class="text-[10px] text-[#94A3B8]">${isAr() ? 'كود التحقق:' : 'Security Code:'}</span>
+                <span id="sandbox-code-display" class="font-mono font-extrabold text-base text-[#34D399] tracking-widest bg-[#172033] px-3 py-1 rounded-lg border border-[#34D399]/30"></span>
+                <button type="button" id="btn-autofill-code" class="px-2.5 py-1 rounded-lg bg-[#6366F1]/20 hover:bg-[#6366F1]/40 text-[#22D3EE] text-[11px] font-semibold transition flex items-center gap-1 border border-[#6366F1]/30">
+                  <i data-lucide="copy" class="w-3 h-3"></i>
+                  <span>${isAr() ? 'تعبئة تلقائية' : 'Auto-fill'}</span>
+                </button>
+              </div>
+            `}
           </div>
 
           <div id="verify-alert" class="hidden mb-4 p-3 rounded-xl border text-xs font-medium text-left flex items-start gap-2.5">
@@ -453,7 +492,7 @@ window.FoundItAuthViews = (function () {
 
             <div>
               <label class="block text-xs font-semibold text-[#94A3B8] mb-2">
-                6-Digit Security Verification Code
+                ${isAr() ? 'أدخل رمز التحقق الأمني المكون من 6 أرقام' : '6-Digit Security Verification Code'}
               </label>
               <input type="text" id="verify-code-input" maxlength="6" pattern="[0-9]{6}" required autofocus
                      class="w-full text-center tracking-[0.5em] font-mono text-xl sm:text-2xl py-3 rounded-xl border border-[#293449] bg-[#111827] text-[#F8FAFC] focus:ring-2 focus:ring-[#6366F1] focus:outline-none"
@@ -464,35 +503,24 @@ window.FoundItAuthViews = (function () {
             <div class="flex items-center justify-between text-[11px] text-[#94A3B8] px-1">
               <span class="flex items-center gap-1 text-[#FBBF24]">
                 <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-                <span id="verify-timer">Expires in 10:00</span>
+                <span id="verify-timer">${isAr() ? 'صلاحية الكود: 10 دقائق' : 'Expires in 10:00'}</span>
               </span>
-              <span id="verify-attempts" class="text-[#64748B]">Max 3 attempts</span>
+              <span id="verify-attempts" class="text-[#64748B]">${isAr() ? 'أقصى حد: 3 محاولات' : 'Max 3 attempts'}</span>
             </div>
 
             <button type="submit" id="btn-verify-submit" class="w-full py-3 rounded-xl bg-[#6366F1] hover:bg-[#4F46E5] text-white font-semibold text-xs sm:text-sm shadow-md shadow-[#6366F1]/25 hover:shadow-lg transition flex items-center justify-center gap-2">
-              <span>Verify & Continue</span>
+              <span>${isAr() ? 'تأكيد الحساب والمتابعة' : 'Verify & Continue'}</span>
               <i data-lucide="check-circle" class="w-4 h-4"></i>
             </button>
           </form>
 
           <!-- Resend Section with Rate Limiting -->
           <div class="mt-6 pt-5 border-t border-[#293449] flex items-center justify-between text-xs">
-            <span class="text-[#64748B]">Didn't receive code?</span>
+            <span class="text-[#64748B]">${isAr() ? 'تريد كوداً جديداً؟' : "Didn't receive code?"}</span>
             <button type="button" id="btn-resend-code" class="text-[#22D3EE] font-bold hover:underline disabled:opacity-50 disabled:no-underline">
-              Resend Code
+              ${isAr() ? 'توليد كود جديد (Resend)' : 'Resend Code'}
             </button>
           </div>
-
-          <!-- Sandbox Test Code Note -->
-          ${demoCode ? `
-            <div class="mt-4 p-3 rounded-xl bg-[#111827] border border-[#293449] text-[11px] text-left space-y-1">
-              <div class="font-bold text-[#34D399] flex items-center gap-1.5">
-                <i data-lucide="info" class="w-3.5 h-3.5"></i>
-                <span>Offline Evaluation Sandbox Key:</span>
-              </div>
-              <p class="text-[#94A3B8]">Use verification code <span class="font-mono font-bold text-white bg-[#172033] px-1.5 py-0.5 rounded border border-[#293449]">${demoCode}</span> for testing.</p>
-            </div>
-          ` : ''}
 
         </div>
       </div>
@@ -505,6 +533,10 @@ window.FoundItAuthViews = (function () {
     const alertText = document.getElementById('verify-alert-text');
     const resendBtn = document.getElementById('btn-resend-code');
     const emailInput = document.getElementById('verify-target-email');
+    const codeInput = document.getElementById('verify-code-input');
+    const autoFillBtn = document.getElementById('btn-autofill-code');
+    const codeDisplay = document.getElementById('sandbox-code-display');
+    const codeContainer = document.getElementById('sandbox-code-container');
     const email = emailInput ? emailInput.value : '';
 
     const showAlert = (msg, isErr = true) => {
@@ -517,10 +549,20 @@ window.FoundItAuthViews = (function () {
       if (window.lucide) window.lucide.createIcons({ root: alertBox });
     };
 
+    if (autoFillBtn && codeInput) {
+      autoFillBtn.addEventListener('click', () => {
+        const currentCode = codeDisplay ? codeDisplay.textContent.trim() : '';
+        if (currentCode) {
+          codeInput.value = currentCode;
+          codeInput.focus();
+        }
+      });
+    }
+
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const code = document.getElementById('verify-code-input').value;
+        const code = codeInput ? codeInput.value : '';
         const submitBtn = document.getElementById('btn-verify-submit');
 
         submitBtn.disabled = true;
@@ -547,6 +589,19 @@ window.FoundItAuthViews = (function () {
         try {
           const res = await window.foundItAuth.resendVerificationCode(email);
           showAlert(res.message, false);
+
+          // Dynamically update the on-screen code
+          if (res.verificationCode) {
+            if (codeDisplay) codeDisplay.textContent = res.verificationCode;
+            if (codeContainer) {
+              codeContainer.classList.remove('hidden');
+              codeContainer.classList.add('flex');
+            }
+            if (codeInput) {
+              codeInput.value = res.verificationCode;
+            }
+          }
+
           // 60-second cooldown timer
           let cooldown = 60;
           resendBtn.textContent = `Wait ${cooldown}s`;
