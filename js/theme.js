@@ -83,6 +83,23 @@ class FoundItTheme {
       window.lucide.createIcons();
     }
   }
+    // Attach click listeners for theme toggles (desktop & mobile)
+    attachListeners() {
+      const desktopBtn = document.getElementById('btn-theme-toggle');
+      if (desktopBtn) {
+        desktopBtn.addEventListener('click', () => {
+          this.toggle();
+        });
+      }
+      const mobileBtn = document.getElementById('mobile-theme-toggle');
+      if (mobileBtn) {
+        mobileBtn.addEventListener('click', () => {
+          this.toggle();
+        });
+      }
+    }
 }
 
 window.FoundItTheme = new FoundItTheme();
+window.FoundItTheme.attachListeners();
+
