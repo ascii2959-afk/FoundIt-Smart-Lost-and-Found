@@ -273,7 +273,121 @@ class FoundItStore {
   /**
    * Pops the last action from the LIFO Undo Stack and restores previous state
    */
+  /**
+   * Undo the last action and push it onto a redo stack for possible re‑redo.
+   */
   undoLastAction() {
+    if (!this.redoStack) this.redoStack = [];
+    if (this.undoStack.length === 0) {
+      return { success: false, message: 'Undo stack is empty.' };
+    }
+
+    const lastAction = this.undoStack.pop();
+    // Store the undone action for redo
+    this.redoStack.push(lastAction);
+
+    if (lastAction.action === 'DELETE_REPORT') {
+      this.reports.unshift(lastAction.deletedSnapshot);
+      this.auditLogs.unshift({
+        id: 'LOG-' + Date.now(),
+        text: `Stack Undo: Restored deleted report ${lastAction.reportId}`,
+        time: new Date().toLocaleString(),
+        type: 'undo'
+      });
+      this.saveReports();
+      return { success: true, message: `Restored deleted report "${lastAction.deletedSnapshot.title}".` };
+    }
+
+    if (lastAction.action === 'ADD_REPORT') {
+      const idx = this.reports.findIndex(r => r.id === lastAction.reportId);
+      if (idx !== -1) {
+        const removed = this.reports.splice(idx, 1)[0];
+        // Push the removed report onto redo stack for redo
+        this.redoStack[this.redoStack.length - 1] = { ...lastAction, removedReport: removed };
+        this.auditLogs.unshift({
+          id: 'LOG-' + Date.now(),
+          text: `Stack Undo: Reverted creation of report ${lastAction.reportId}`,
+          time: new Date().toLocaleString(),
+          type: 'undo'
+        });
+        this.saveReports();
+        return { success: true, message: `Reverted creation of report ${lastAction.reportId}.` };
+      }
+    }
+
+    if (lastAction.action === 'UPDATE_REPORT') {
+      const idx = this.reports.findIndex(r => r.id === lastAction.reportId);
+      if (idx !== -1) {
+        this.reports[idx] = lastAction.previousSnapshot;
+        this.auditLogs.unshift({
+          id: 'LOG-' + Date.now(),
+          text: `Stack Undo: Reverted modifications on report ${lastAction.reportId}`,
+          time: new Date().toLocaleString(),
+          type: 'undo'
+        });
+        this.saveReports();
+        return { success: true, message: `Restored previous state of report ${lastAction.reportId}.` };
+      }
+    }
+
+    return { success: false, message: 'Unrecognized action on stack.' };
+  }
+
+  /**
+   * Redo the most recent undone action.
+   */
+  redoLastAction() {
+    if (!this.redoStack || this.redoStack.length === 0) {
+      return { success: false, message: 'Redo stack is empty.' };
+    }
+    const action = this.redoStack.pop();
+    // Re‑apply based on original action type
+    if (action.action === 'ADD_REPORT') {
+      // Re‑add the report that was previously removed by undo
+      const report = action.removedReport || action.snapshot;
+      this.reports.unshift(report);
+      this.auditLogs.unshift({
+        id: 'LOG-' + Date.now(),
+        text: `Stack Redo: Re‑added report ${report.id}`,
+        time: new Date().toLocaleString(),
+        type: 'redo'
+      });
+      this.saveReports();
+      return { success: true, message: `Re‑added report ${report.id}.` };
+    }
+    if (action.action === 'DELETE_REPORT') {
+      // Delete the report again
+      const idx = this.reports.findIndex(r => r.id === action.reportId);
+      if (idx !== -1) {
+        const deleted = this.reports.splice(idx, 1)[0];
+        this.auditLogs.unshift({
+          id: 'LOG-' + Date.now(),
+          text: `Stack Redo: Re‑deleted report ${action.reportId}`,
+          time: new Date().toLocaleString(),
+          type: 'redo'
+        });
+        this.saveReports();
+        return { success: true, message: `Re‑deleted report ${action.reportId}.` };
+      }
+    }
+    if (action.action === 'UPDATE_REPORT') {
+      // Apply the newSnapshot again
+      const idx = this.reports.findIndex(r => r.id === action.reportId);
+      if (idx !== -1) {
+        this.reports[idx] = action.newSnapshot;
+        this.auditLogs.unshift({
+          id: 'LOG-' + Date.now(),
+          text: `Stack Redo: Re‑applied update on report ${action.reportId}`,
+          time: new Date().toLocaleString(),
+          type: 'redo'
+        });
+        this.saveReports();
+        return { success: true, message: `Re‑applied update on report ${action.reportId}.` };
+      }
+    }
+    return { success: false, message: 'Redo action not recognized.' };
+  }
+
     if (this.undoStack.length === 0) {
       return { success: false, message: 'Undo stack is empty.' };
     }

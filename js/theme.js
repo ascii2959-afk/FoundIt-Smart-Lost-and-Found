@@ -6,7 +6,7 @@
  * - Surface: #111827
  * - Card/Panel: #172033
  * - Primary Accent: #6366F1 (Indigo)
- * - Secondary Accent: #22D3EE (Cyan)
+ * - Secondary Accent: #22D2EE (Cyan)
  * - Success: #34D399 | Warning: #FBBF24 | Error: #F87171
  * - Borders: #293449 | Text: #F8FAFC / #94A3B8
  */
